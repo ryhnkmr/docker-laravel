@@ -16,7 +16,7 @@
 `composer install`  
 7. 入ったコンテナの中でコマンドを叩く  
 `cp .env.example .env`  
-8. App Keyの作成
+8. App Keyの作成  
 `php artisan key:generate`  
 9. ローカルホストで表示  
 `http://127.0.0.1:10080`でブラウザを開く  
