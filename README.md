@@ -7,6 +7,7 @@
 1. まず、このプロジェクトをGitKrakenでcloneする。  
  URL: `https://github.com/ryohei0419/docker-laravel.git`  
 2. VSCodeでクローンしたプロジェクトを開く  
+　　Docker for Desktopを起動する　　
 3. VSCodeでターミナルを開く  
 4. プロジェクトのDockerイメージなどを作成  
 `docker-compose up -d --build`  
