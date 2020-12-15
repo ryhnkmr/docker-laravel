@@ -5,6 +5,8 @@
 `docker-compose exec app bash`  
 でappコンテナに入る。基本的にこの中に入ってから`php artisan `コマンドを実行。  
 
+`php artisan tinker`  
+データの確認や作成ができる。
 
 ##環境構築手順
 0. 前提
