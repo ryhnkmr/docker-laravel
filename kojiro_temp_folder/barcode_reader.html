@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Barcode Detection Sample (video)</title>
+</head>
+
+<body>
+
+    <video id="player" muted autoplay></video>
+    <canvas id="snapshot" width=0 height=0></canvas>
+    <div>
+        Barcode text : <span id="rawValue"></span>
+    </div>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+
+    <div class="book_info">
+        <div>isbn13: <span id="isbn13"></span></div>
+        <div>isbn10: <span id="isbn10"></span></div>
+        <div>著者: <span id="BookAuthor"></span></div>
+        <div>初版: <span id="PublishedDate"></span></div>
+        <div>概要: <span id="BookDescription"></span></div>
+        <div id="BookThumbnail"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        //Barcodeスタート
+        const video = document.getElementById('player');
+        const canvas = document.getElementById('snapshot');
+        const ctx = canvas.getContext('2d');
+        let videoTracks;
+        let localStream = null;
+        let captureTimer = null;
+        const fps = 10;
+        let medias = {
+            video:
+            {
+                width: 320,
+                height: 240,
+                facingMode:
+                {
+                    exact: "environment" // リアカメラを使用
+                }
+            },
+            audio: false
+        };
+
+        const startbtn = document.getElementById('start');
+        const stopbtn = document.getElementById('stop');
+
+        startbtn.onclick = function()
+        {
+            navigator.mediaDevices.getUserMedia(medias)
+                .then(function(stream)
+                {
+                    video.srcObject = stream;
+                    localStream = stream;
+
+                    if (window.BarcodeDetector)
+                    {
+                        const detector = new BarcodeDetector();
+                        captureTimer = setInterval(function()
+                        {
+                            ctx.drawImage(video, 0, 0, canvas
+                                .width, canvas.height);
+                            let scale = 1;
+                            detector.detect(video).then(
+                                function(barcodes)
+                                {
+                                    ctx.lineWidth = 2;
+                                    ctx.strokeStyle =
+                                        'red';
+                                    for (let barcode of barcodes)
+                                    {
+                                        ctx.beginPath();
+                                        ctx.rect(Math.floor(
+                                                barcode
+                                                .boundingBox
+                                                .x *
+                                                scale
+                                            ),
+                                            Math.floor(
+                                                barcode
+                                                .boundingBox
+                                                .y *
+                                                scale
+                                            ),
+                                            Math.floor(
+                                                barcode
+                                                .boundingBox
+                                                .width *
+                                                scale
+                                            ),
+                                            Math.floor(
+                                                barcode
+                                                .boundingBox
+                                                .height *
+                                                scale
+                                            ));
+                                        ctx.stroke();
+                                        // console.log(
+                                        //     "value : " +
+                                        //     barcode.rawValue
+                                        // );
+                                        // console.log(
+                                        //     barcode);
+                                        isbn = convertLink(barcode.rawValue);
+                                        console.log(isbn); //isbnに数値を代入
+                                        document.getElementById('rawValue').innerHTML = convertLink(isbn);
+                                        get_book_info(isbn); //GBooksの読み込み
+                                    }
+                                }).catch(function(err)
+                            {
+                                console.error(err);
+                            });
+                        }, 1000 / fps);
+                    }
+                    else
+                    {
+                        console.error(
+                            'BarcodeDetection is not enable!');
+                    }
+                    startbtn.disabled = true;
+                    stopbtn.disabled = false;
+                }).catch(function(err)
+                {
+                    console.error(err);
+                    // リアカメラが無い場合はそれ以外のカメラ
+                    medias = {
+                        video:
+                        {
+                            width: 320,
+                            height: 240
+                        },
+                        audio: false
+                    };
+
+                });
+        };
+
+        stopbtn.onclick = function()
+        {
+            clearInterval(captureTimer);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            localStream.getTracks().forEach(function(track)
+            {
+                track.stop();
+            });
+            localStream = null;
+            video.srcObject = null;
+            startbtn.disabled = false;
+            stopbtn.disabled = true;
+
+        };
+
+        function convertLink(str)
+        {
+            const regexpUrl =
+                /((h?)(ttps?:\/\/[a-zA-Z0-9.\-_@:/~?%&;=+#',()*!]+))/g; // ']))/;
+            const regexpLink = function(all, url, h, href)
+            {
+                return '<a href="h' + href + '">' + url + '</a>';
+            }
+
+            return str.replace(regexpUrl, regexpLink);
+        };
+        // load時にstart状態にする
+        startbtn.click();
+        //  Barcode終わり
+
+        // Google Books api スタート
+        // フォームID [isbn] に入力があった場合、jQueryの関数 [change] を使ってISBNコードを取得。
+// Google Books APIへ問い合わせを行う。
+// もしGoogle Books APIに書籍が存在しない(totalItemsが0の場合)、入力欄に表示されたデータをすべて消去し、該当書籍がないとメッセージを表示する
+
+    function get_book_info(isbn){
+      const url = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn;
+      $.getJSON(url, function(data) {
+        if(!data.totalItems) {
+          $("#isbn").val("");
+          $("#BookTitle").text("");
+          $("#BookAuthor").text("");
+          $("#isbn10").text("");
+          $("#isbn13").text("");
+          $("#PublishedDate").text("");
+          $("#BookThumbnail").text("");
+          $("#BookDescription").text("");
+          $("#BookMemo").val("");
+
+          $("#message").html('<p class="bg-warning" id="warning">該当する書籍がありません。</p>');
+          $('#message > p').fadeOut(3000);
+
+        } else {
+
+        // 該当書籍が存在した場合、JSONから値を取得して入力項目のデータを取得する
+
+          $("#BookTitle").text(data.items[0].volumeInfo.title);
+          $("#isbn10").text(data.items[0].volumeInfo.industryIdentifiers[0].identifier);
+          $("#isbn13").text(data.items[0].volumeInfo.industryIdentifiers[1].identifier);
+          $("#BookAuthor").text(data.items[0].volumeInfo.authors[0]);
+          $("#PublishedDate").text(data.items[0].volumeInfo.publishedDate);
+          $("#BookDescription").text(data.items[0].volumeInfo.description);
+          $("#BookThumbnail").html('<img src=\"' + data.items[0].volumeInfo.imageLinks.smallThumbnail + '\" />');
+
+        }
+
+      });
+    }
+    </script>
+
+</body>
+
+</html>
