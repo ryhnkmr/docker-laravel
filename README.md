@@ -1,4 +1,11 @@
 # docker-laravel
+##開発注意点  
+`docker-compose up`  
+でdockerコンテナの起動をする  
+`docker-compose exec app bash`  
+でappコンテナに入る。基本的にこの中に入ってから`php artisan `コマンドを実行。  
+
+
 ##環境構築手順
 0. 前提
   まずDockerをダウンロードする。  
@@ -23,3 +30,4 @@
 `http://127.0.0.1:10080`でブラウザを開く  
 
 9でLaravelの最初の画面が表示されていれば無事完了  
+
