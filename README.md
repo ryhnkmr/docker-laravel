@@ -1,5 +1,5 @@
 # docker-laravel
-##開発注意点  
+## 開発注意点  
 `docker-compose up`  
 でdockerコンテナの起動をする  
 `docker-compose exec app bash`  
@@ -8,7 +8,30 @@
 `php artisan tinker`  
 データの確認や作成ができる。
 
-##環境構築手順
+## Pusherに関してやってほしいこと(12/16追記)
+https://gsacademy-lab10.slack.com/archives/G01GG8BG39Q/p1608130230038500
+`infra/php/Dockerfile`をslackのスニペット通りに上書き変更してください。
+上書きしたら
+`docker-compose build`  
+してください。
+
+`docker-compose exec app bash`  
+でappコンテナに入って以下のコマンドを実行してください。
+
+### インストールされたjsモジュールを全部消す
+`rm -rf node_modules`
+
+### インストールされたjsモジュールのバージョン情報を消す
+`rm package-lock.json`
+
+### npmのキャッシュをクリアする
+`npm cache clear --force`
+
+### 再度jsモジュールを全部入れ直して、実行する
+`npm install`
+`npm run dev`
+
+## 環境構築手順
 0. 前提
   まずDockerをダウンロードする。  
   Macの方：https://docs.docker.com/docker-for-mac/install  
