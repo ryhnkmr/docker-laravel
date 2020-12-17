@@ -22,6 +22,7 @@ class CreateCharactersTable extends Migration
             $table->integer('defence'); //防御力
             $table->integer('exp')->default(0); //経験値 初期値0
             $table->integer('level')->default(1); //レベル 初期値Lv.1
+            $table->integer('publisher')->default(0); //出版社(属性)
             $table->string('thumnailURL', 100); //本サムネイル
             $table->string('pictoURL', 100); //キャラ画像
             $table->timestamps();
