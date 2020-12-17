@@ -5,6 +5,9 @@
 `docker-compose exec app bash`  
 でappコンテナに入る。基本的にこの中に入ってから`php artisan `コマンドを実行。  
 
+`npm run watch`  
+を起動する。これをしないとjsの変更が加わらない。
+
 `php artisan tinker`  
 データの確認や作成ができる。
 
