@@ -16,3 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+use App\Events\Battle;
+
+Route::get('/room', function () {
+
+    event(new Battle);
+    return view('test');
+});
