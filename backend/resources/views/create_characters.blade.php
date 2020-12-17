@@ -32,7 +32,8 @@
     <!-- guaggaとjquery、JSの読み込み -->
     <script src="https://serratus.github.io/quaggaJS/examples/js/quagga.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script>
+    <script src="/js/app.js"></script>
+    <!-- <script>
         //バーコードリーダー機能
         Quagga.init({
         inputStream: {
@@ -127,7 +128,7 @@
             // 「id="jQueryBox"」を非表示
             $("#interactive").css("display", "none");
         }
-    </script>
+    </script> -->
 </body>
 
 </html>
