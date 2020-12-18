@@ -21,7 +21,18 @@
             <div class="">
                 <nav class="navbar navbar-light bg-light" >
                     <h1 class="navbar-brand">TITLE</h1>
+
+                    <a class="text-right" href="{{ route('logout') }}"
+                        onclick="event.preventDefault();
+                            document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                    </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+
                 </nav>
+                
             </div>
 
         <div class="row"> 
@@ -32,7 +43,7 @@
                     <div class="usericonname d-flex justify-content-center ">
                             <div class="profile-usertitle-name">
                                 <img src="https://placehold.jp/100x100.png" alt="" class="m-3">
-                                <h3 class="font-weight-bold">Username</h3>
+                                <h3 class="font-weight-bold">{{Auth::user()->name}}</h3>
                             </div>
                     </div>
 
@@ -40,11 +51,11 @@
                     <div class="profile-user-pointrrecord font-weight-bold">
                         <div class="profile-user-pointtitle ">POINTS</div>
                         <div class="profile-user-point col-8 border border-dark bg-white mx-auto m-2">
-                            <p class="d-flex align-items-center justify-content-center">echo 1800.'Pt';</p>  
+                            <p class="d-flex align-items-center justify-content-center">{{Auth::user()->point.'Pt'}}</p>  
                         </div>
                         <div class="profile-user-recordtitle">Battle Record</div>
                         <div class="profile-user-record col-8 border border-dark bg-white mx-auto m-2">
-                            <p class="text-center">5win 3lose</p>
+                            <p class="text-center">{{Auth::user()->wincount.' win'}} / {{Auth::user()->losecount.' lose'}}</p>
                         </div>
                     </div>
                 </div>
@@ -75,9 +86,9 @@
                             <div class="m-2">
                                 <ul>
                                     <p>Today's News</p>
-                                    <li>テストテスト</li>
-                                    <li>テストテスト</li>
-                                    <li>テストテスト</li>
+                                    <li>テストテストテスト</li>
+                                    <li>テストテストテスト</li>
+                                    <li>テストテストテスト</li>
                                 </ul>
                              </div>
                         </div>
