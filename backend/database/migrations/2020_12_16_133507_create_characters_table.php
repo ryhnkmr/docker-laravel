@@ -15,14 +15,13 @@ class CreateCharactersTable extends Migration
     {
         Schema::create('characters', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('uid'); //ユーザーID
+            $table->integer('user_id'); //ユーザーID
             $table->string('name', 20); //VARCHAR, 長さ指定カラム
             $table->integer('hp'); //HP
-            $table->integer('attack'); //攻撃力
-            $table->integer('defence'); //防御力
+            $table->integer('ap'); //攻撃力
+            $table->integer('dp'); //防御力
             $table->integer('exp')->default(0); //経験値 初期値0
-            $table->integer('level')->default(1); //レベル 初期値Lv.1
-            $table->integer('publisher')->default(0); //出版社(属性)
+            $table->integer('lv')->default(1); //レベル 初期値Lv.1
             $table->string('thumnailURL', 100); //本サムネイル
             $table->string('pictoURL', 100); //キャラ画像
             $table->timestamps();

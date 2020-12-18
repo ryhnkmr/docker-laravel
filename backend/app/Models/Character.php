@@ -11,11 +11,18 @@ class Character extends Model
 
     protected $fillable = [
         'name',
-        'email',
-        'password',
-        'point',
-        'rate',
+        'user_id',
+        'hp',
+        'ap',
+        'dp',
+        'exp',
+        'lv',
+        'thumnailURL',
+        'pictoURL'
     ];
 
-    
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }
