@@ -48,16 +48,15 @@ const calc = isbn => {
 Quagga.onDetected(success => {
 const code = success.codeResult.code;
 if(calc(code))
-    alert(code);
+    // alert(code);
     if(code.slice(0,3)==978){ //isbnコード上3桁チェック
-        rakuten_info(code);
-        Quagga.stop();
-        turn_off_video();
+        rakuten_info(code);//楽天API
+        Quagga.stop();//ビデオ停止
+        turn_off_video();//ビデオ領域非表示
     }
 })
 
-//楽天のAPI叩いて情報とってくる
-//変数用意
+//楽天API用の変数用意
 let r_BookTitle;
 let r_isbn13;
 let r_BookAuthor;
@@ -71,6 +70,10 @@ let r_size;
 let r_page;
 let r_genre;
 
+//Char-paramのグローバル変数用意
+let hp, ap, dp;
+
+//楽天のAPI叩いて情報取得
 function rakuten_info(isbn){
     const r_url = "https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?format=json&applicationId=1080706320822310184&isbn=" + isbn;
     $.getJSON(r_url, function(data) {
@@ -130,7 +133,7 @@ function calc_param(){
     if(r_reviewAverage<2){r_reviewAverage=2};//レビュー評価の調整
     let genre = r_genre.slice(3,6); //ジャンル取得 (3桁取得 上3桁除く)
 
-    //概要の文字数取得、ボーナスポイント（倍数）決定
+    //概要の文字数取得、文字数でボーナス倍数を決定
     let length = r_BookDescription.length;
     let bonus = 1;
     if(length<50){
@@ -146,7 +149,7 @@ function calc_param(){
     ap = Math.round(180 * date/100000 + r_price/10);
     dp = 100 * r_reviewAverage;
 
-    //ボーナスポイント積算
+    //ボーナス倍数を積算
     let month = date.slice(-2);//出版月取得
     if(month == "07" || month == "11"){ap = Math.round(ap * bonus)}; //攻撃力アップ
     if(month == "01" || month == "04"){dp = Math.round(dp * bonus)}; //防御力アップ
@@ -165,7 +168,38 @@ function show_char_data(hp, ap, dp, r_BookThumbnail){
     $("#r_BookThumbnail").html(r_BookThumbnail);
 }
 
-//char-tableのcolumn
-//id,uid,name(name合成API),hp,ap,dp,exp(初期値0),lv(初期値1),thumnailURL,pictoURL(合成),size
+//テーブル挿入php用 axios通信
+function post_param(hp,ap,dp){
+    //アニメーション挿入部
 
+    //Ajax開始
+    $.ajax({
+        url:'',
+        type: 'POST',
+        dataType: 'json',
+        data:{
+            name: 'ブックン',
+            hp: hp,
+            ap: ap,
+            dp: dp
+        }
+    })
+    .then(
+        function(data){//成功->表示処理を書く
+        },
+        function(){ //失敗
+            alert("呼び出し失敗");
+        }
+    );
+}
+
+
+
+
+//改良必要：
 //apiデータなかった場合、ビデオ再表示・Guagga再起動
+//読み込み部分のサイズ変更とマスキング
+
+//メモ：
+//-char-tableのcolumn
+//id,uid,name(name合成API),hp,ap,dp,exp(初期値0),lv(初期値1),thumnailURL,pictoURL(合成),size
