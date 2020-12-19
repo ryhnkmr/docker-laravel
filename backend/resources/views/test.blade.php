@@ -24,7 +24,6 @@
       let first_chara;
       let second_chara;
       // host: player1, guest: player2
-      debugger
       player1 = [
         {
           hp: 2000,
