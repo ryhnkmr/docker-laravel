@@ -23,8 +23,8 @@ use App\Events\AttackEvent;
 Route::post('/battle',function(Request $request){
 
     $battle = [
-       'attacker_chara_id'=> $request->attacker_chara_id,
-       'defender_chara_id'=> $request->defender_chara_id,
+       'tern'=> $request->tern,
+       'first_flg'=> $request->first_flg
     ];
 
     event(new AttackEvent($battle));
