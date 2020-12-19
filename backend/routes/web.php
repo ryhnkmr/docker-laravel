@@ -17,6 +17,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+use App\Events\Battle;
+
+Route::get('/room', function () {
+
+    event(new Battle);
+    return view('test');
+});
 Route::get('/create_characters', function () {
     return view('create_characters');
 });

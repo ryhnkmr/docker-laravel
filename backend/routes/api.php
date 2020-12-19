@@ -17,3 +17,18 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+use App\Events\AttackEvent;
+
+Route::post('/battle',function(Request $request){
+
+    $battle = [
+       'tern'=> $request->tern,
+       'first_flg'=> $request->first_flg
+    ];
+
+    event(new AttackEvent($battle));
+    Log::debug($battle);
+
+    return $battle;
+});
