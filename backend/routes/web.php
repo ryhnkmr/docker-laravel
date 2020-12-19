@@ -17,6 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/create_characters', function () {
+    return view('create_characters');
+});
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\MyPagesController::class, 'mypage']);
