@@ -99,82 +99,10 @@
           tern: 1,
           first_flg: true,
         },
-        // first: {
-        //   hp: 2000,
-        //   chara: {
-        //     id: 1,
-        //     hp: 2000,
-        //     ap: 1000,
-        //     dp: 500,
-        //     status: 0,
-        //     user_id: 1,
-        //   },
-        // },
-        // second: {
-        //   hp: 3000,
-        //   chara: {
-        //     id: 4,
-        //     hp: 2000,
-        //     ap: 1000,
-        //     dp: 500,
-        //     status: 0,
-        //     user_id: 2,
-        //   }
-        // },
       },
 
-      characters = [
-        {
-          id: 1,
-          hp: 2000,
-          ap: 1000,
-          dp: 500,
-          status: 0,
-          user_id: 1,
-        }, 
-        {
-          id: 2,
-          hp: 2000,
-          ap: 1000,
-          dp: 500,
-          status: 0,
-          user_id: 1,
-        },
-        {
-          id: 3,
-          hp: 2000,
-          ap: 1000,
-          dp: 500,
-          status: 0,
-          user_id: 1,
-        },
-        {
-          id: 4,
-          hp: 2000,
-          ap: 1000,
-          dp: 200,
-          user_id: 2,
-          status: 0
-        },
-        {
-          id: 5,
-          hp: 2000,
-          ap: 1000,
-          dp: 200,
-          user_id: 2,
-          status: 0
-        },
-        {
-          id: 6,
-          hp: 2000,
-          ap: 1000,
-          dp: 500,
-          user_id: 2,
-          status: 0
-        },  
-      ]
-      const player1_hp = document.getElementById('player1_current_hp');
-      const player2_hp = document.getElementById('player2_current_hp');
+      player1_hp = document.getElementById('player1_current_hp');
+      player2_hp = document.getElementById('player2_current_hp');
 
       player1_hp.innerHTML = player1[0].hp;
       player2_hp.innerHTML = player2[0].hp;
@@ -205,7 +133,6 @@
       
       // MEMO: ラウンド準備フェイズ
       // ToDo: キャラ選択、その情報をbroadcastする、バトルインフォのセット
-      player1_current_hp
       
       // MEMO: 戦闘フェイズ及びそれ関連の処理
       // 自分が先攻で先攻のターンのときか自分が後攻で後攻のターンのときボタンが押せる
@@ -230,22 +157,30 @@
 
       window.Echo.channel('battle')
         .listen('AttackEvent',function(data){
-          console.log(data)
+          fetch_battle_info(data);
           // MEMO: 先攻後攻を3項演算子で判定
           attacker_info = data.battle.first_flg? player1[0] : player2[0];
           defender_info = data.battle.first_flg? player2[0] : player1[0];
-          debugger
+
+          // debugger
           dmg = calc_attack_dmg(
             attacker_info.chara.ap, defender_info.chara.dp
           );
 
-          current_hp = calc_hp(defender_info.hp, dmg);
+          calc_hp(defender_info, dmg);
           
-          after_culc_dmg(current_hp)
+          check_hp_and_delete_dead_chara(defender_info, data);
+          update_battle_info();
+          check_match_result();
           
-          // MEMO: hpのupdate
-          defender_info.hp = current_hp;  
+          player1_hp.innerHTML = player1[0].hp;
+          player2_hp.innerHTML = player2[0].hp;
         });
+      
+      // MEMO: broadcastされたバトルインフォのfetch
+      function fetch_battle_info(data) {
+        battle_info.info = data.battle;
+      }
 
       // MEMO: 戦闘処理
       function calc_attack_dmg(ap, dp, rand_value = 1) {
@@ -270,36 +205,45 @@
 
       }
       // MEMO: ④の計算
-      function calc_hp(current_hp, dmg_pt) {
-        return current_hp - dmg_pt;
+      function calc_hp(defender, dmg_pt) {
+        defender.hp -= dmg_pt;
       }
       // MEMO: ⑤の判定
       function dead(current_hp) {
         return current_hp <= 0;
       }
-      // MEMO: ダメージ計算後のHP判定
-      function after_culc_dmg(current_hp) {
-        if (dead(current_hp)) {
-          // どちらのplayerが死んだか判断
-          if (battle.first_flg) {
-            player1.shift;
-          } else {
-            player2.shift
+
+      // MEMO: ⑤の判定
+      function check_hp_and_delete_dead_chara(defender_info, data) {
+        if (defender_info.hp <= 0) {
+          // どちらのplayerのキャラが死んだか判断(先攻のターンならplayer2がdead, 後攻のターンならplayer1がdead)
+          if (data.battle.first_flg && player2.length >= 1) {
+            player2.shift();
+          } else if (!data.battle.first_flg && player1.length >= 1) {
+            player1.shift();
           }
-        } else {
-          // MEMO: ターン情報の更新
-          // 後攻だったらターンプラス1
-          if (!battle_info.info.first_flg) {
-            battle_info.info.tern += 1
-          }
-          battle_info.info.first_flg = !battle_info.info.first_flg
         }
       }
 
+      // MEMO: 
+      function check_match_result() {
+        if(player1.length == 0) {
+          alert('player2 win')
+        } else if (player2.length == 0) {
+          alert('player1 win')
+        }
+      }
+
+      function update_battle_info() {
+        // MEMO: ターン情報の更新
+        // 後攻だったらターンプラス1
+        if (!battle_info.info.first_flg) {
+          battle_info.info.tern += 1
+        }
+        battle_info.info.first_flg = !battle_info.info.first_flg;
+      }
       // MEMO: ラウンド終了フェイズ
       // battle_infoの保存
-
-
     </script>
   </body>
 </html>
