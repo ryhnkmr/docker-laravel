@@ -22,6 +22,8 @@ class User extends Authenticatable
         'password',
         'point',
         'rate',
+        'wincount',
+        'losecount',
     ];
 
     /**

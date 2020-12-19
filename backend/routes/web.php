@@ -18,9 +18,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+use App\Events\Battle;
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/room', function () {
+
+    event(new Battle);
+    return view('test');
+});
 Route::get('/create_characters', function () {
     return view('create_characters');
+});
+
+Auth::routes();
+
+Route::get('/create_characters', function () {
+    return view('create_characters');
+});
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'home']);
 });

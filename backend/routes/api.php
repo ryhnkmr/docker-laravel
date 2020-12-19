@@ -52,3 +52,18 @@ Route::post('/api/user/{{Auth::user()->id}}/characters', function (Request $requ
     $characters->save();
     return redirect('/create_characters');
 });
+
+use App\Events\AttackEvent;
+
+Route::post('/battle',function(Request $request){
+
+    $battle = [
+       'tern'=> $request->tern,
+       'first_flg'=> $request->first_flg
+    ];
+
+    event(new AttackEvent($battle));
+    Log::debug($battle);
+
+    return $battle;
+});
