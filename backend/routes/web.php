@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,7 +31,9 @@ Route::get('/create_characters', function () {
 
 Auth::routes();
 
-Route::group(['middleware' => 'auth'], function(){
+Route::get('/create_characters', function () {
+    return view('create_characters');
+});
+Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'home']);
 });
-

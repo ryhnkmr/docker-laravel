@@ -6,6 +6,7 @@ require('../js/bootstrap');
  */
 
 require('./bootstrap');
+require('./barcode_bookInfo')
 
 // import "./barcode_bookInfo"
 window.Vue = require('vue');
@@ -32,3 +33,4 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 const app = new Vue({
     el: '#app',
 });
+import "./barcode_bookInfo"
