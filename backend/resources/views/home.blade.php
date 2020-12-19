@@ -86,7 +86,7 @@
                                 </div>
 
                                 <div class="room-set mx-auto">
-                                    <button type="button" class="btn btn-primary btn-md">BattleRoom</button>    
+                                    <a href="/room"><button type="button" class="btn btn-primary btn-md">BattleRoom</button></a>    
                                 </div>
 
                                 <div class="room-set mx-auto">
