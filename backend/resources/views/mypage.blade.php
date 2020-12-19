@@ -51,11 +51,27 @@
                     <div class="profile-user-pointrrecord font-weight-bold">
                         <div class="profile-user-pointtitle ">POINTS</div>
                         <div class="profile-user-point col-8 border border-dark bg-white mx-auto m-2">
-                            <p class="d-flex align-items-center justify-content-center">{{Auth::user()->point.'Pt'}}</p>  
+                            <div>
+                                <tr>
+                                    <td><font size="+2">{{Auth::user()->point}}</font></td>
+                                    <td>pt</td>
+                                </tr>
+                            </div>
+
+                            <!-- <td class="d-flex align-items-center justify-content-cente font-weight-bold"><h4 class="">{{Auth::user()->point}}</h4></td>
+                            <td>Pt</td> -->
                         </div>
                         <div class="profile-user-recordtitle">Battle Record</div>
                         <div class="profile-user-record col-8 border border-dark bg-white mx-auto m-2">
-                            <p class="text-center">{{Auth::user()->wincount.' win'}} / {{Auth::user()->losecount.' lose'}}</p>
+                            <div>
+                                <tr>
+                                    <td><font size="+2">{{Auth::user()->wincount}}</font></td>
+                                    <td>win</td>
+                                    <td><font size="+2">{{Auth::user()->losecount}}</font></td>
+                                    <td>lose</td>
+                                </tr>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -83,7 +99,7 @@
 
                         <div class="main-todaysNews bg-white text-dark">
                             <!--ニュース-->
-                            <div class="m-2">
+                            <div class="m-4">
                                 <ul>
                                     <p>Today's News</p>
                                     <li>テストテストテスト</li>
