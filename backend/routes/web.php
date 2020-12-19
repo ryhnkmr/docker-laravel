@@ -23,4 +23,13 @@ Route::get('/create_characters', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\MyPagesController::class, 'mypage']);
+
+Route::get('/mypage', 'MyPagesController@mypage'); //MyPagesController
+
+Route::group(['middleware' => 'auth'], function(){
+    Route::get("/mypage",function(){
+        return view("/mypage");
+    });
+});
+

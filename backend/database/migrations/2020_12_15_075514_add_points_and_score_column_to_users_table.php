@@ -16,6 +16,8 @@ class AddPointsAndScoreColumnToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->integer("point")->default(10000);
             $table->integer("rate")->default(1000);
+            $table->integer("wincount")->default(0);
+            $table->integer("losecount")->default(0);
         });
     }
 
