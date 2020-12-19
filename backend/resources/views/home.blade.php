@@ -58,8 +58,6 @@
                                 </tr>
                             </div>
 
-                            <!-- <td class="d-flex align-items-center justify-content-cente font-weight-bold"><h4 class="">{{Auth::user()->point}}</h4></td>
-                            <td>Pt</td> -->
                         </div>
                         <div class="profile-user-recordtitle">Battle Record</div>
                         <div class="profile-user-record col-8 border border-dark bg-white mx-auto m-2">
@@ -79,25 +77,25 @@
 <!-- right -->
             <div class="col-xl-9 col-sm-8 main">
                     <!--ゲームのメニュー-->
-                    <div class="main-operation ">
+                    <div class="main-operation">
                         <!--準備-->
                         <div class="row my-4"> 
                            
-                                <div class="Room-Set mx-auto">
+                                <div class="room-set mx-auto">
                                     <button type="button" class="btn btn-primary btn-md ">CharacterSet</button>    
                                 </div>
 
-                                <div class="Room-Set mx-auto">
+                                <div class="room-set mx-auto">
                                     <button type="button" class="btn btn-primary btn-md">BattleRoom</button>    
                                 </div>
 
-                                <div class="Room--Set mx-auto">
+                                <div class="room-set mx-auto">
                                     <button type="button" class="btn btn-primary btn-md">BetRoom</button>
                                 </div>
                             
                         </div>
 
-                        <div class="main-today-News bg-white text-dark">
+                        <div class="main-today-news bg-white text-dark">
                             <!--ニュース-->
                             <div class="m-4">
                                 <ul>
@@ -127,7 +125,8 @@
                                     </div>
                             </div>
                         </div>
-                        <div class="main-team-stock"> <!--ストック-->
+                        <!--ストック-->
+                        <div class="main-team-stock"> 
                             <div class="main-team-stock-name sm-5">
                                 <h3 class="p-4 font-weight-bold">Stock CharactorsStock</h3>
                                     <tr>
