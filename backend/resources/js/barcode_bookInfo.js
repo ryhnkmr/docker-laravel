@@ -174,7 +174,7 @@ function post_param(hp,ap,dp){
 
     //Ajax開始
     $.ajax({
-        url:'',
+        url:'/characters',
         type: 'POST',
         dataType: 'json',
         data:{

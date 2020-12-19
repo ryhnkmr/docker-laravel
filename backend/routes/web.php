@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Character
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,3 +25,5 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/create_characters', function () {
     return view('create_characters');
 });
+
+Route::post('/characters','CharactersController@store');
