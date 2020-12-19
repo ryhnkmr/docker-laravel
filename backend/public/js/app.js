@@ -23488,7 +23488,4 @@ window.Echo.channel('battle').listen('Battle', function (data) {// console.log('
 __webpack_require__(/*! /work/resources/js/app.js */"./resources/js/app.js");
 module.exports = __webpack_require__(/*! /work/resources/css/app.css */"./resources/css/app.css");
 
-
 /***/ })
-
-/******/ });
