@@ -19,11 +19,12 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="/js/app.js"></script>
     <script>
-      current_user_id = 1;
+      current_user_id = <?php echo(Auth::user()->id) ?>;
       attack_btn = document.getElementById('attack');
       let first_chara;
       let second_chara;
       // host: player1, guest: player2
+      debugger
       player1 = [
         {
           hp: 2000,
