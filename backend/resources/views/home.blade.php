@@ -40,7 +40,7 @@
                 <div class="col-xl-3 col-sm-4 sidebar bg-warning "> 
 
                         <!--ユーザーアイコンとユーザーネーム-->
-                    <div class="usericonname d-flex justify-content-center ">
+                    <div class="user-icon-name d-flex justify-content-center ">
                             <div class="profile-usertitle-name">
                                 <img src="https://placehold.jp/100x100.png" alt="" class="m-3">
                                 <h3 class="font-weight-bold">{{Auth::user()->name}}</h3>
@@ -48,8 +48,8 @@
                     </div>
 
                     <!--戦績-->
-                    <div class="profile-user-pointrrecord font-weight-bold">
-                        <div class="profile-user-pointtitle ">POINTS</div>
+                    <div class="profile-user-point-record font-weight-bold">
+                        <div class="profile-user-point-title ">POINTS</div>
                         <div class="profile-user-point col-8 border border-dark bg-white mx-auto m-2">
                             <div>
                                 <tr>
@@ -83,21 +83,21 @@
                         <!--準備-->
                         <div class="row my-4"> 
                            
-                                <div class="RoomSet mx-auto">
+                                <div class="Room-Set mx-auto">
                                     <button type="button" class="btn btn-primary btn-md ">CharacterSet</button>    
                                 </div>
 
-                                <div class="RoomSet mx-auto">
+                                <div class="Room-Set mx-auto">
                                     <button type="button" class="btn btn-primary btn-md">BattleRoom</button>    
                                 </div>
 
-                                <div class="RoomSet mx-auto">
+                                <div class="Room--Set mx-auto">
                                     <button type="button" class="btn btn-primary btn-md">BetRoom</button>
                                 </div>
                             
                         </div>
 
-                        <div class="main-todaysNews bg-white text-dark">
+                        <div class="main-today-News bg-white text-dark">
                             <!--ニュース-->
                             <div class="m-4">
                                 <ul>
@@ -112,7 +112,7 @@
                     <div class="main-team bg-info">
                         <!--スターティングメンバ―-->
                         <div class="main-team-starting my-2"> 
-                            <div class="main-team-yourteam ">
+                            <div class="main-team-best">
                                 <h3 class="p-4 font-weight-bold">YOUR TEAM</h3>
                                     <div class="row col-8 mx-auto">
                                         <div class="m-3">
