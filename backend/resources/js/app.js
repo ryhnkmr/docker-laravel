@@ -7,7 +7,7 @@ require('../js/bootstrap');
 
 require('./bootstrap');
 
-import "./barcode_bookInfo"
+// import "./barcode_bookInfo"
 window.Vue = require('vue');
 
 /**
