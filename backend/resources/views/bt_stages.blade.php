@@ -7,26 +7,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
 <style>
-        .graph {
-        position: relative; /* IE is dumb */
-        width: 1000px;
-        background: linear-gradient(blue 40%, white);
-        border-radius: 10px;
-        border: 3px solid #ffffff;
-        padding: 0px;
-    }
-    .graph .bar {
-        display: block;
-        position: relative;
-        background: linear-gradient(red 40%, white);
-        border-radius: 10px 0px 0px 10px;
-        text-align: center;
-        color: #333;
-        height: 1em;
-        line-height: 2em;           
-    }
-    .graph .bar span { position: absolute; left: 1em; }
-
     .bettor-comment{
         padding: 0.5em 1em;
         font-weight: bold;
@@ -40,8 +20,24 @@
         margin: 0; 
         padding: 0;
     }
+    /* 黒フェード */
+    #fadeLayer {
+        position:absolute;
+        top:0px;
+        left:0px;
+
+        width:100%;
+        height:100%;
+
+        background-color:#000000;
+        opacity:0.5;
+        visibility:hidden;
+        z-index:1;
+        }
+
+ 
 </style>
-</style>
+
 <body>
 
     <div clsass="container-fuluid">
@@ -127,10 +123,30 @@
                             <img src="https://placehold.jp/100x100.png" alt="">
                         </div>
                     </div>
-
+                    
+                    <!-- バトルステージ -->
                     <div class="main-column col-md-8" style="background-color:rgba(255,255,255,0.8);">
-                        <div class="battle_stage bg-info"style="width:100%; height:350px;">
-                            <div>バトル画面バトル画面バトル画面バトル画面</div>
+                        <div class="battle_stage"style="width:100%; height:350px;">
+                        
+                            <div class="row" style="text-align:center; margin:0 auto;">
+
+                                <div class="bg-info mt-3 mx-auto " style="width:350px;height:340px;">
+                                    <div class="" id="elem"><img src="{{ asset('img/chara1.png')}}" style=""></div>
+                                </div>
+                                
+                                <div class=" mt-3 mx-auto" style="width:200px;height:340px">
+                                バ
+                                </div>
+
+                                <div class="bg-info mt-3 mx-auto" style="width:350px;height:340px">
+                                    <div id="elem2"><img src="{{ asset('img/chara2.png')}}"></div>
+                                </div>
+                            
+                            
+                            
+                            
+                            
+                            </div>
                         </div>    
                             <!-- STATUS -->
                             <div class="status-column">
@@ -187,6 +203,13 @@
                 </div>
             </div>
 
+        <!-- 画面暗くする -->
+        <a href="javascript:void(0);" onclick="fade();">黒フェード</a>
+        <div id="fadeLayer"></div>
+
+
+         <!-- リザルト -->
+       <div ></div>
         
             
         
@@ -194,10 +217,54 @@
 
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    
-        <!-- chat.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-    
+    <!-- anime.jp -->
+    <script src="/js/anime.min.js"></script>
+
+
+    <script>
+    // キャラクター攻撃アニメーション
+    var elem = document.getElementById('elem');
+        elem.addEventListener('click',function(){
+            anime({
+                targets: elem,
+                    keyframes: [
+                        {translateX: 700},
+                        {translateX: 600},
+                        {translateX: 700},
+                        {translateX: 0}
+                     ],
+                    duration: 800,
+                    easing: 'easeOutElastic(1, .8)',
+                    loop: 1
+                })
+            })
+
+    var elem2 = document.getElementById('elem2');
+        elem2.addEventListener('click',function(){
+            anime({
+                targets: elem2,
+                    keyframes: [
+                        {translateX: -700},
+                        {translateX: -600},
+                        {translateX: -700},
+                        {translateX: 0}
+                     ],
+                    duration: 800,
+                    easing: 'easeOutElastic(1, .8)',
+                    loop: 1
+
+                })
+
+        })
+
+    // 画面黒フェード
+        function fade(){
+            var target = document.getElementById("fadeLayer");
+            target.style.visibility = "visible";
+        }
+
+
+    </script>
 
 </body>
 </html>
