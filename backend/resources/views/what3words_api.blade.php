@@ -11,153 +11,111 @@
 <p id='content1'></p>
 <p id='content2'></p>
 <p id='content3'></p>
+<p id='content4'></p>
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://assets.what3words.com/sdk/v3/what3words.js?key=Z9Y6EOLM"></script>
 
 <script>
-let isbn_s         = '9784492532706'; //ここに楽天APIの「isbn」を入れる
-let booksGenreId_s = '1006018002';    //ここに楽天APIの「booksGenreId」を入れる
-let isbn           = Number(isbn_s);
-let booksGenreId   = Number(booksGenreId_s);
-
-let base_plus      = isbn + booksGenreId;
-let base_minus     = isbn - booksGenreId;
-
-let rand_lon1      = culc_rand_num(139, 139);
-let rand_lon2      = culc_rand_num(base_minus, base_plus);
-let rand_lat1      = culc_rand_num(35, 35);
-let rand_lat2      = culc_rand_num(isbn, base_plus);
-
-function culc_rand_num(min, max) {
+function culc_rand_num(min, max) { //ランダム生成の関数
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-let result1 = String(rand_lon2);
-let result2 = String(rand_lat2);
-let res1    = result1.slice(-3);
-let res2    = result2.slice(-3);
-console.log(res1);
-console.log(res2);
+const hiraToKana = text =>{ //かな→カナ変換の関数
+  return text.replace( /[\u3042-\u3093]/g, 
+    m => String.fromCharCode(m.charCodeAt(0) + 96)
+  );
+};
 
-const longitude = res1;
-const latitude  = res2;
-const baseURL   = 'https://api.what3words.com/v3/convert-to-3wa?key=Z9Y6EOLM'
-
-let word = '';
+let isbn_s         = '9784492532706'; //★ここに楽天APIの「isbn」を入れる
+let booksGenreId_s = '1006018002';    //★ここに楽天APIの「booksGenreId」を入れる
+let isbn           = Number(isbn_s);
+let booksGenreId   = Number(booksGenreId_s);
+let base_plus      = isbn + booksGenreId;
+let base_minus     = isbn - booksGenreId;
+let rand_lon       = culc_rand_num(base_minus, base_plus);
+let rand_lat       = culc_rand_num(base_minus, base_plus);
+let result1        = String(rand_lon);
+let result2        = String(rand_lat);
+let res1           = result1.slice(-3);
+let res2           = result2.slice(-3);
+const longitude    = res1;
+const latitude     = res2;
+const baseURL      = 'https://api.what3words.com/v3/convert-to-3wa?key=Z9Y6EOLM'
+let word           = '';
 axios.get(baseURL+'&coordinates=35.669' + latitude + ',139.703' + longitude + '&language=ja&format=json')
 .then(function (response) {
   console.log(response);
-  let words = response.data.words;
-  word = words.split('・'); //指定した区切りで分割して配列に格納
-  console.log(word);
-
-  let what_num = culc_rand_num(0, 1);
-  let name1 = word[what_num];
-  let name2 = word[2];
-
-  let plus_name = '';
-  let name_s = culc_rand_num(1, 3);
-  if(name_s==1){
-    plus_name = 'de';
-  }
-  if(name_s==2){
-    plus_name = '＆';
-  }
-  if(name_s==3){
-    plus_name = '＠';
-  }
-  console.log(plus_name);
-
-  const name = name1 + plus_name + name2;
-  console.log(name);
-debugger
-  let pub = '角川'; //ここに楽天APIの「publisherName」を入れる
-  let plus = '';
-  if (pub.indexOf('角川') != -1) { //strに引数を含む場合の処理
-    plus = '角かわん';
-  }
-  if (pub.indexOf('KADOKAWA') != -1) {
-    plus = '角かわん';
-  }
-  if (pub.indexOf('学研') != -1) {
-    plus = '振り返れば学研';
-  }
-  if (pub.indexOf('幻冬舎') != -1) {
-    plus = '幻の冬';
-  }
-  if (pub.indexOf('光文社') != -1) {
-    plus = '光は文';
-  }
-  if (pub.indexOf('講談') != -1) {
-    plus = '講じ談じ';
-  }
-  if (pub.indexOf('集英') != -1) {
-    plus = '集まったー英';
-  }
-  if (pub.indexOf('新潮') != -1) {
-    plus = 'ニュー潮';
-  }
-  if (pub.indexOf('小学館') != -1) {
-    plus = 'スモール学館';
-  }
-  if (pub.indexOf('主婦と生活') != -1) {
-    plus = '主婦と生活';
-  }
-  if (pub.indexOf('世界文化') != -1) {
-    plus = '世界な文化';
-  }
-  if (pub.indexOf('スクウェア・エニックス') != -1) {
-    plus = 'FFとDQ';
-  }
-  if (pub.indexOf('ダイヤモンド') != -1) {
+  let words     = response.data.words;
+  word          = words.split('・'); //指定した区切りで分割して配列に格納
+  let nameParts = word[0];
+  let attribute = word[1];
+  let codeName  = hiraToKana(word[2]);
+  let pub       = '角川'; //★ここに楽天APIの「publisherName」を入れる
+  let plus      = '';
+  if (pub.indexOf('角川') != -1) {
+    plus = 'KADOKAWA';
+  } else if(pub.indexOf('KADOKAWA') != -1) {
+    plus = 'KADOKAWA';
+  } else if(pub.indexOf('岩波') != -1) {
+    plus = 'ロック＆ウェーブ書店';
+  } else if (pub.indexOf('学研') != -1) {
+    plus = '学研';
+  } else if (pub.indexOf('幻冬舎') != -1) {
+    plus = '幻冬舎';
+  } else if (pub.indexOf('光文社') != -1) {
+    plus = '光文杜';
+  } else if (pub.indexOf('講談') != -1) {
+    plus = '講談杜';
+  } else if (pub.indexOf('集英') != -1) {
+    plus = 'ジャンプ杜';
+  } else if (pub.indexOf('新潮') != -1) {
+    plus = '新潮杜';
+  } else if (pub.indexOf('小学館') != -1) {
+    plus = 'Small学館';
+  } else if (pub.indexOf('主婦と生活') != -1) {
+    plus = '主婦と生活杜';
+  } else if (pub.indexOf('世界文化') != -1) {
+    plus = '世界文化杜';
+  } else if (pub.indexOf('スクウェア・エニックス') != -1) {
+    plus = 'FF&DQ杜';
+  } else if (pub.indexOf('ダイヤモンド') != -1) {
     plus = '永遠の輝き杜';
+  }else if (pub.indexOf('宝島') != -1) {
+    plus = 'トレジャー島社';
+  } else if (pub.indexOf('徳間') != -1) {
+    plus = '徳間deジブリ書店';
+  } else if (pub.indexOf('日経') != -1) {
+    plus = '上から日経杜';
+  } else if (pub.indexOf('PHP') != -1) {
+    plus = 'PHP研究所';
+  } else if (pub.indexOf('扶桑') != -1) {
+    plus = '扶桑杜';
+  } else if (pub.indexOf('プレジデント') != -1) {
+    plus = '社長杜';
+  } else if (pub.indexOf('ベネッセ') != -1) {
+    plus = '昔は福武書店';
+  } else if (pub.indexOf('ポプラ') != -1) {
+    plus = 'ポプラ杜';
+  } else if (pub.indexOf('山と渓谷') != -1) {
+    plus = '山と渓谷';
+  } else {
+    plus = '有象無象';
   }
-  if (pub.indexOf('宝島') != -1) {
-    plus = 'トレジャーな島';
-  }
-  if (pub.indexOf('徳間') != -1) {
-    plus = '徳間deジブリ';
-  }
-  if (pub.indexOf('日経') != -1) {
-    plus = '上から日経';
-  }
-  if (pub.indexOf('PHP研究所') != -1) {
-    plus = 'PHPを研究なう';
-  }
-  if (pub.indexOf('扶桑社') != -1) {
-    plus = '扶と桑';
-  }
-  if (pub.indexOf('プレジデント') != -1) {
-    plus = '社長と大統領';
-  }
-  if (pub.indexOf('ベネッセ') != -1) {
-    plus = 'べねっせでっせ';
-  }
-  if (pub.indexOf('ポプラ') != -1) {
-    plus = 'ポップラ';
-  }
-  if (pub.indexOf('山と渓谷社') != -1) {
-    plus = 'そこに山と渓谷';
-  }
+  let charaName = nameParts + ' @' + plus;
   
-  //  else {
-  //   plus = 'その他';
-  // }
-
-  const jobs = ['勇者','戦士','武闘家','魔法使い','僧侶','商人','遊び人','賢者','盗賊','踊り子','吟遊詩人','CSV',];
-  let job_rand = culc_rand_num(1, jobs.length-1);
-  console.log(job_rand);
-  console.log(jobs[job_rand]);
-  console.log(plus);
+  const jobs    = ['勇者','戦士','武闘家','魔法使い','僧侶','商人','遊び人','賢者','盗賊','踊り子','吟遊詩人','CSV'];
+  let job_rand  = culc_rand_num(1, jobs.length-1);
+  let jobName   = jobs[job_rand];
 
   player1 = document.getElementById('content1');
   player2 = document.getElementById('content2');
   player3 = document.getElementById('content3');
-  player1.innerHTML = plus+' 族';
-  player2.innerHTML = name;
-  player3.innerHTML = '職業 '+jobs[job_rand];
-
+  player4 = document.getElementById('content4');
+  player1.innerHTML = '名前：' + charaName;
+  player2.innerHTML = '属性：' + attribute;
+  player3.innerHTML = '職業：' + jobName;
+  player4.innerHTML = 'CodeName：' + codeName;
 })
 .catch(function (error) {
   console.log(error);
