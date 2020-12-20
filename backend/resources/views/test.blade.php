@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Document</title>
   </head>
   <body>
@@ -18,8 +19,20 @@
     <!-- <button id="attack2">player2 attack</button> -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="/js/app.js"></script>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script>
+      Pusher.logToConsole = false;
       current_user_id = <?php echo(Auth::user()->id) ?>;
+      
+      var pusher = new Pusher('52ce419442d9e72911ab', {
+        cluster: 'ap3'
+      });
+
+      var channel = pusher.subscribe('battle');
+      channel.bind('App\\Events\\Battle', function(data) {
+        console.log('hoge');
+      });
+
       attack_btn = document.getElementById('attack');
       let first_chara;
       let second_chara;
@@ -155,27 +168,26 @@
         });
       }
 
-      window.Echo.channel('battle')
-        .listen('AttackEvent',function(data){
-          fetch_battle_info(data);
-          // MEMO: 先攻後攻を3項演算子で判定
-          attacker_info = data.battle.first_flg? player1[0] : player2[0];
-          defender_info = data.battle.first_flg? player2[0] : player1[0];
+      channel.bind('App\\Events\\AttackEvent', function(data) {
+        fetch_battle_info(data);
+        // MEMO: 先攻後攻を3項演算子で判定
+        attacker_info = data.battle.first_flg? player1[0] : player2[0];
+        defender_info = data.battle.first_flg? player2[0] : player1[0];
 
-          // debugger
-          dmg = calc_attack_dmg(
-            attacker_info.chara.ap, defender_info.chara.dp
-          );
+        // debugger
+        dmg = calc_attack_dmg(
+          attacker_info.chara.ap, defender_info.chara.dp
+        );
 
-          calc_hp(defender_info, dmg);
-          
-          check_hp_and_delete_dead_chara(defender_info, data);
-          update_battle_info();
-          check_match_result();
-          
-          player1_hp.innerHTML = player1[0].hp;
-          player2_hp.innerHTML = player2[0].hp;
-        });
+        calc_hp(defender_info, dmg);
+        
+        check_hp_and_delete_dead_chara(defender_info, data);
+        update_battle_info();
+        check_match_result();
+        
+        player1_hp.innerHTML = player1[0].hp;
+        player2_hp.innerHTML = player2[0].hp;
+      });
       
       // MEMO: broadcastされたバトルインフォのfetch
       function fetch_battle_info(data) {
