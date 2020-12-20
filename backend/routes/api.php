@@ -58,12 +58,13 @@ use App\Events\AttackEvent;
 Route::post('/battle',function(Request $request){
 
     $battle = [
-    'tern'=> $request->tern,
-       'first_flg'=> $request->first_flg
+       'info'=> $request->info,
+       'player1'=> $request->player1,
+       'player2'=> $request->player2,
     ];
 
     event(new AttackEvent($battle));
-    Log::debug($battle);
+    Log::debug($request);
 
     return $battle;
 });

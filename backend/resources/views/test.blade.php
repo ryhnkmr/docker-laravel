@@ -23,20 +23,14 @@
     <script>
       Pusher.logToConsole = false;
       current_user_id = <?php echo(Auth::user()->id) ?>;
-      
-      var pusher = new Pusher('52ce419442d9e72911ab', {
-        cluster: 'ap3'
-      });
-
-      var channel = pusher.subscribe('battle');
-      channel.bind('App\\Events\\Battle', function(data) {
-        console.log('hoge');
-      });
-
-      attack_btn = document.getElementById('attack');
-      let first_chara;
-      let second_chara;
-      // host: player1, guest: player2
+      battle_info = {
+        info: {
+          tern: 1,
+          first_flg: true,
+        },
+        player1: null,
+        player2: null,
+      };
       player1 = [
         {
           hp: 2000,
@@ -106,13 +100,98 @@
           }, 
         }, 
       ];
+      
+      var pusher = new Pusher('52ce419442d9e72911ab', {
+        cluster: 'ap3'
+      });
 
-      battle_info = {
-        info: {
-          tern: 1,
-          first_flg: true,
+      var channel = pusher.subscribe('battle');
+      channel.bind('App\\Events\\Battle', function(data) {
+        // battle_infoをsetする
+        player1 = [
+        {
+          hp: 2000,
+          chara: {
+            id: 1,
+            hp: 2000,
+            ap: 1000,
+            dp: 500,
+            user_id: 1,
+          }, 
         },
-      },
+        {
+          hp: 2000,
+          chara: {
+            id: 1,
+            hp: 2000,
+            ap: 1000,
+            dp: 500,
+            status: 0,
+            user_id: 1,
+          }, 
+        },
+        {
+          hp: 2000,
+          chara: {
+            id: 1,
+            hp: 2000,
+            ap: 1000,
+            dp: 500,
+            status: 0,
+            user_id: 1,
+          }, 
+        },
+      ];
+      player2 = [
+        {
+          hp: 2000,
+          chara: {
+            id: 1,
+            hp: 2000,
+            ap: 1000,
+            dp: 500,
+            status: 0,
+            user_id: 1,
+          }, 
+        },
+        {
+          hp: 2000,
+          chara: {
+            id: 1,
+            hp: 2000,
+            ap: 1000,
+            dp: 500,
+            status: 0,
+            user_id: 1,
+          }, 
+        },
+        {
+          hp: 2000,
+          chara: {
+            id: 1,
+            hp: 2000,
+            ap: 1000,
+            dp: 500,
+            status: 0,
+            user_id: 1,
+          }, 
+        }, 
+      ];
+        battle_info.player1 = player1;
+        battle_info.player2 = player2;
+      });
+
+      battle_info.player1 = player1;
+      battle_info.player2 = player2; 
+
+      attack_btn = document.getElementById('attack');
+      // host: player1, guest: player2
+      
+      if (battle_info.player1[0].chara.user_id != current_user_id) {
+        attack_btn.disabled = false;
+      } else {
+        attack_btn.disabled = true;
+      }
 
       player1_hp = document.getElementById('player1_current_hp');
       player2_hp = document.getElementById('player2_current_hp');
@@ -160,7 +239,7 @@
       }
 
       attack_btn.onclick = function () {
-        axios.post('/api/battle', battle_info.info ).then(function (response) {
+        axios.post('/api/battle', battle_info ).then(function (response) {
           console.log(response);
         })
         .catch(function (error) {
@@ -169,10 +248,10 @@
       }
 
       channel.bind('App\\Events\\AttackEvent', function(data) {
-        fetch_battle_info(data);
+        fetch_battle_info(data.battle);
         // MEMO: 先攻後攻を3項演算子で判定
-        attacker_info = data.battle.first_flg? player1[0] : player2[0];
-        defender_info = data.battle.first_flg? player2[0] : player1[0];
+        attacker_info = battle_info.info.first_flg? battle_info.player1[0] : battle_info.player2[0];
+        defender_info = battle_info.info.first_flg? battle_info.player2[0] : battle_info.player1[0];
 
         // debugger
         dmg = calc_attack_dmg(
@@ -181,17 +260,18 @@
 
         calc_hp(defender_info, dmg);
         
-        check_hp_and_delete_dead_chara(defender_info, data);
+        check_hp_and_delete_dead_chara(defender_info);
         update_battle_info();
         check_match_result();
-        
-        player1_hp.innerHTML = player1[0].hp;
-        player2_hp.innerHTML = player2[0].hp;
+        player1_hp.innerHTML = battle_info.player1[0].hp;
+        player2_hp.innerHTML = battle_info.player2[0].hp;
       });
       
       // MEMO: broadcastされたバトルインフォのfetch
       function fetch_battle_info(data) {
-        battle_info.info = data.battle;
+        battle_info.info = data.info;
+        battle_info.player1 = data.player1;
+        battle_info.player2 = data.player2;
       }
 
       // MEMO: 戦闘処理
@@ -226,22 +306,22 @@
       }
 
       // MEMO: ⑤の判定
-      function check_hp_and_delete_dead_chara(defender_info, data) {
+      function check_hp_and_delete_dead_chara(defender_info) {
         if (defender_info.hp <= 0) {
           // どちらのplayerのキャラが死んだか判断(先攻のターンならplayer2がdead, 後攻のターンならplayer1がdead)
-          if (data.battle.first_flg && player2.length >= 1) {
-            player2.shift();
-          } else if (!data.battle.first_flg && player1.length >= 1) {
-            player1.shift();
+          if (battle_info.info.first_flg && battle_info.player2.length >= 1) {
+            battle_info.player2.shift();
+          } else if (!battle_info.info.first_flg && battle_info.player1.length >= 1) {
+            battle_info.player1.shift();
           }
         }
       }
 
       // MEMO: 
       function check_match_result() {
-        if(player1.length == 0) {
+        if(battle_info.player1.length == 0) {
           alert('player2 win')
-        } else if (player2.length == 0) {
+        } else if (battle_info.player2.length == 0) {
           alert('player1 win')
         }
       }
