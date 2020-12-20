@@ -71,7 +71,7 @@ axios.get(baseURL+'&coordinates=35.669' + latitude + ',139.703' + longitude + '&
 
   const name = name1 + plus_name + name2;
   console.log(name);
-
+debugger
   let pub = '角川'; //ここに楽天APIの「publisherName」を入れる
   let plus = '';
   if (pub.indexOf('角川') != -1) { //strに引数を含む場合の処理
@@ -111,7 +111,7 @@ axios.get(baseURL+'&coordinates=35.669' + latitude + ',139.703' + longitude + '&
     plus = 'FFとDQ';
   }
   if (pub.indexOf('ダイヤモンド') != -1) {
-    plus = '永遠の輝き';
+    plus = '永遠の輝き杜';
   }
   if (pub.indexOf('宝島') != -1) {
     plus = 'トレジャーな島';
@@ -140,6 +140,10 @@ axios.get(baseURL+'&coordinates=35.669' + latitude + ',139.703' + longitude + '&
   if (pub.indexOf('山と渓谷社') != -1) {
     plus = 'そこに山と渓谷';
   }
+  
+  //  else {
+  //   plus = 'その他';
+  // }
 
   const jobs = ['勇者','戦士','武闘家','魔法使い','僧侶','商人','遊び人','賢者','盗賊','踊り子','吟遊詩人','CSV',];
   let job_rand = culc_rand_num(1, jobs.length-1);
