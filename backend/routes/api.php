@@ -58,7 +58,7 @@ use App\Events\AttackEvent;
 Route::post('/battle',function(Request $request){
 
     $battle = [
-       'tern'=> $request->tern,
+    'tern'=> $request->tern,
        'first_flg'=> $request->first_flg
     ];
 
