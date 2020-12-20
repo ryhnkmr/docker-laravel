@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,26 +13,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/bt_stages', function () {
+    return view('bt_stages');
 });
 
-use App\Events\Battle;
-
-Route::get('/room', function () {
-
-    event(new Battle);
-    return view('test');
-});
 Route::get('/create_characters', function () {
     return view('create_characters');
+});
+
+Route::get('/bt_stages', function () {
+    return view('bt_stages');
 });
 
 Auth::routes();
 
-Route::get('/create_characters', function () {
-    return view('create_characters');
-});
-Route::group(['middleware' => 'auth'], function () {
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'home']);
-});
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
