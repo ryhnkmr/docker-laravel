@@ -12,7 +12,7 @@
         width: 1000px;
         background: linear-gradient(blue 40%, white);
         border-radius: 10px;
-        border: 1.5px solid #ffffff;
+        border: 3px solid #ffffff;
         padding: 0px;
     }
     .graph .bar {
@@ -26,6 +26,20 @@
         line-height: 2em;           
     }
     .graph .bar span { position: absolute; left: 1em; }
+
+    .bettor-comment{
+        padding: 0.5em 1em;
+        font-weight: bold;
+        margin: 5px;
+        color: #6091d3;/*文字色*/
+        background: #FFF;
+        border: solid 3px #6091d3;/*線*/
+        border-radius: 10px;/*角の丸み*/
+    }
+    .box2 p {
+        margin: 0; 
+        padding: 0;
+    }
 </style>
 </style>
 <body>
@@ -63,7 +77,7 @@
                     </div>
                     <!-- TURN -->
                     <div class="col-md-4">
-                            <div class="m-3 row ">
+                            <div class="row">
                                 <div style="font-size: 40pt; font-weight:bold;text-align:center; margin:0 auto;">
                                 TURN {{1}} <!--ターン数表示-->
                                 </div>
@@ -99,63 +113,83 @@
         </div>
 
         <!-- body -->
-<div style="background-image: url({{ asset('img/books.jpg') }});">
-    <div style="height: 100%; background: rgba(255,255,255,0.5);">
-        <div class="row">
-            <div class="left-column col-md-3" style="background:">
-                <div class="m-2 border border-dark mx-auto" style="width:250px; height:250px">
-                <img src="https://placehold.jp/250x250.png" alt="">
-                </div>
-                <div class="m-2 border border-dark mx-auto" style="width:250px; height:250px">
-                <img src="https://placehold.jp/250x250.png" alt="">
-                </div>
-                <div class="m-2 border border-dark mx-auto" style="width:250px; height:250px">
-                <img src="https://placehold.jp/250x250.png" alt="">
-                </div>
-            </div>
-
-            <div class="main-column col-md-6" style="background-color:rgba(255,255,255,0.8);">
-                <div class="battle_stage"style="width:100%; height:560px;">
-                    <div>バトル画面バトル画面バトル画面バトル画面</div>
-                </div>    
-                    <!-- STATUS -->
-                    <div class="status-column">
-                        <div class="shadow bg-warning rounded mx-auto" style="width:750px; height:200px;">
-                                    <h2 class="m-2" style="">STATUS</h2>
-                                    <div>・テストテストテストテストテストテスト</div>
+        <div style="background-image: url({{ asset('img/books.jpg') }});">
+            <div style="height: 100%; background: rgba(255,255,255,0.5);">
+                <div class="row">
+                    <div class="left-column col-md-2 mt-5" style="height:400px;">
+                        <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
+                            <img src="https://placehold.jp/100x100.png" alt="">
+                        </div>
+                        <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
+                            <img src="https://placehold.jp/100x100.png" alt="">
+                        </div>
+                        <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
+                            <img src="https://placehold.jp/100x100.png" alt="">
                         </div>
                     </div>
-                
+
+                    <div class="main-column col-md-8" style="background-color:rgba(255,255,255,0.8);">
+                        <div class="battle_stage bg-info"style="width:100%; height:350px;">
+                            <div>バトル画面バトル画面バトル画面バトル画面</div>
+                        </div>    
+                            <!-- STATUS -->
+                            <div class="status-column">
+                                <div class="shadow bg-warning rounded mx-auto m-3" style="width:750px; height:150px;">
+                                    <h4 class="m-2" style="">STATUS</h4>
+                                    <div>・テストテストテストテストテストテスト</div>
+                                </div>
+                            </div>
+                        
+                    </div>
+
+                        <div class="rite-column col-md-2 mt-5" style="height:400px;">
+                            <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
+                                <img src="https://placehold.jp/100x100.png" alt="">
+                            </div>
+                            <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
+                                <img src="https://placehold.jp/100x100.png" alt="">
+                            </div>
+                            <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
+                                <img src="https://placehold.jp/100x100.png" alt="">
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+            <!-- Bet情報 -->
+            <div class="row">
+                <div class="col-md-12 p-2" style="background:#fa5246; height:80px">
+                    <div>
+                        <h3 style="text-align: center;">BET</h3>
+                        <div class="graph" style="text-align:center; margin:0 auto;">
+                            <!-- BETバロメーター width:値にplayer1のBET割合を入れる -->
+                            <strong class="bar" style="width: 40%;"></strong>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="right-column col-md-3" style="background:">
-                <div class="m-2 border border-dark mx-auto" style="width:250px; height:250px">
-                <img src="https://placehold.jp/250x250.png" alt="">
-                </div>
-                <div class="m-2 border border-dark mx-auto" style="width:250px; height:250px">
-                <img src="https://placehold.jp/250x250.png" alt="">
-                </div>
-                <div class="m-2 border border-dark mx-auto" style="width:250px; height:250px">
-                <img src="https://placehold.jp/250x250.png" alt="">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-        <!-- Bet情報 -->
-        <div class="row">
-            <div class="col-md-12 p-2" style="background:#fa5246; height:80px">
-                <div>
-                <h3 style="text-align: center;">BET</h3>
-                <div class="graph" style="text-align:center; margin:0 auto;">
-                    <!-- BETバロメーター width:値にplayer1のBET割合を入れる -->
-                    <strong class="bar" style="width: 40%;"></strong>
-                </div>
+            <!-- comment -->
+            <div class="comment-field">
+                <div class="row">
+                    <div class="comment-column col-md-6" style="width:50%; height:240px;">
+                        <div class="pl-5 pt-2"><h5>player1:Comments from the bettor</h5></div>
+                        <div class="bettor-comment mx-auto" style="width:80%; height:180px;">
+                            <p>コメント内容</p>
+                        </div>
+                    </div>
+                    <div class="comment-column col-md-6" style="width:50%; height:240px;">
+                        <div class="pl-5 pt-2"><h5>player2:Comments from the bettor</h5></div>
+                        <div class="bettor-comment mx-auto" style="width:80%; height:180px;">
+                            <p>コメント内容</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+
         
-    
+            
+        
     </div>
 
     <!-- jQuery -->
