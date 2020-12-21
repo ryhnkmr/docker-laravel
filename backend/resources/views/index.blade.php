@@ -51,22 +51,22 @@
            
         </div>
         
-        <div class="row" style="margin-top:50px;">
+        <!-- <div class="row" style="margin-top:50px;">
             <div class="col-md-12 text-center">
                 <p class="wf-nicomoji" style="color:orange; font-size:50px;">ブックdeバーコードバトラー</p>
             </div>
-        </div>
-        <div class="row" style="margin-top:30px;">
+        </div> -->
+        <!-- <div class="row" style="margin-top:30px;">
             <div class="col-md-12 text-center">
                 <h4 class="wf-roundedmplus1c" style="color:gray;">
                     ようこそ本のせかいへ<br>
                     ぶらぶらぶらぶら～あぶらかたぶら～     
                 </h4>
             </div>
-        </div>
+        </div> -->
         <div class="row" style="margin-top:40px;">
             <div class="col-md-12 text-center">
-                <img src="{{asset('img/top_img.png')}}" class="">
+                <img src="{{asset('img/new_top.png')}}" class="" style='width: 100%;'>
             </div>
         </div>
 
