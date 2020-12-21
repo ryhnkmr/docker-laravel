@@ -15,7 +15,7 @@ class RoomController extends Controller
      */
     public function index()
     {
-        $rooms = Room::all();
+        $rooms = Room::with('users')->where('active_flg', true)->get();
         return view('rooms.index')->with('rooms', $rooms);
     }
 
@@ -37,7 +37,7 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-        Room::create($request->all());
+        $room = Room::create($request->all());
         return redirect()->route('rooms.index')->with('success', '新規登録完了しました');
     }
 

@@ -45,6 +45,7 @@
       btn.onclick = function() {
         axios.post('/api/rooms', {
           name: document.getElementById('room_name').value,
+          user_id: <?php echo(Auth::user()->id)?>
         }).then(function (response) {
           window.location = response.data.id;
           console.log(response);

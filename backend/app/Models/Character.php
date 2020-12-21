@@ -27,6 +27,6 @@ class Character extends Model
     }
 
     public function teams() {
-        return $this->belogsToMasy('App\Models\Team');
+        return $this->belongsToMany('App\Models\Team');
     }
 }

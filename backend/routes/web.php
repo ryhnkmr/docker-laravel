@@ -35,7 +35,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/create_characters', function () {
         return view('create_characters');
     });
-    
+
     Route::resource('rooms', RoomController::class);
 });
 

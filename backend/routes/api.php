@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Character;
 use App\Models\Room;
+use App\Models\User;
 // use Validator;
 
 /*
@@ -55,7 +56,7 @@ Route::post('/api/user/{{Auth::user()->id}}/characters', function (Request $requ
 });
 
 use App\Events\AttackEvent;
-
+use App\Events\RoomCreated;
 Route::post('/rooms/{id}/attack',function($id, Request $request){
 
     Log::debug($id);
@@ -71,5 +72,16 @@ Route::post('/rooms/{id}/attack',function($id, Request $request){
 
 Route::post('rooms', function(Request $request) {
     $room = Room::create($request->all());
+    $room->users()->attach($request->user_id);
+    $characters = User::find($request->user_id)->teams->first()->characters;
+
+    event(new RoomCreated($room, $characters));
+    
+    return $room;
+});
+
+Route::post('rooms/join', function(Request $request) {
+    $room = Room::where([['can_join_flg', true], ['id', $request->room_id]])->first();
+    
     return $room;
 });

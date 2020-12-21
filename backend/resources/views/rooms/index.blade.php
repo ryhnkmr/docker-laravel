@@ -22,70 +22,38 @@
         </nav>
       </div>
       <h1>現在参加できるルーム一覧</h1>
-      <button type="button" class="btn btn-primary"><a href="{{route('rooms.create')}}">ルームを作成して待機</a></button>
+      <a href="{{route('rooms.create')}}"><button type="button" class="btn btn-success">ルームを作成して待機</button></a>
       <div class="room-list mt-3">
         <div class="d-flex flex-row bd-highlight mb-3 flex-wrap">
-          {{-- <div class="p-5 bd-highlight">Flex item 1</div>
-          <div class="p-5 bd-highlight">Flex item 2</div>
-          <div class="p-5 bd-highlight">Flex item 3</div> --}}
-          <div class="card m-3" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">ホゲホゲ</h5>
-              <h6 class="card-subtitle m-2 text-muted">ホスト：ホゲ</h6>
-              <h6 class="card-subtitle m-2 text-muted">レート：2000</h6>
-              <h6 class="card-subtitle m-2 text-muted">戦績：1win 0lose</h6>
-              <a href="#" class="card-link">参加する</a>
-            </div>
-          </div>
-          <div class="card m-3" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="card-link">参加する</a>
-            </div>
-          </div>
-          <div class="card m-3" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="card-link">参加する</a>
-            </div>
-          </div>
-          <div class="card m-3" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="card-link">参加する</a>
-            </div>
-          </div>
-          <div class="card m-3" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="card-link">参加する</a>
-            </div>
-          </div>
-          <div class="card m-3" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="card-link">Card link</a>
-              <a href="#" class="card-link">Another link</a>
-            </div>
-          </div>
-          {{-- @forelse($rooms as $room)
-          
+          @forelse($rooms as $room)
+            @foreach($room->users as $user)
+              <div class="card m-3" style="width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">{{$room->name}}</h5>
+                  <h6 class="card-subtitle m-2 text-muted">ホスト：{{$user->name}}</h6>
+                  <h6 class="card-subtitle m-2 text-muted">レート：{{$user->rate}}</h6>
+                  <h6 class="card-subtitle m-2 text-muted">戦績：{{$user->wincount}}win{{$user->losecount}}lose</h6>
+                  <button id="join-btn" type="button" class="btn btn-primary" value={{(int) $room->id}}>参加する</button>                </div>
+              </div>
+            @endforeach
           @empty
             <p>現在参加できるルームはありません。</p>
-          @endforelse  --}}
+          @endforelse 
         </div>
-        
-        
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+          join_btn = document.getElementById('join-btn');
+          join_btn.onclick = function() {
+            axios.post('api/rooms/join', {
+              user_id: <?php echo(Auth::user()->id )?>,
+              room_id: join_btn.value,
+            }).then(function (response) {
+              window.location = 'rooms/' + response.data.id;
+            }).catch(function (error) {
+              console.log(error);
+            });
+          }
+        </script>
       </div>
     </div>
 

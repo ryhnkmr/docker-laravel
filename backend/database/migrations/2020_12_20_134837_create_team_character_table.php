@@ -13,7 +13,7 @@ class CreateTeamCharacterTable extends Migration
      */
     public function up()
     {
-        Schema::create('team_character', function (Blueprint $table) {
+        Schema::create('character_team', function (Blueprint $table) {
             $table->id();
             $table->integer('team_id');
             $table->integer('character_id');

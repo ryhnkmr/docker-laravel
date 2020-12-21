@@ -241,6 +241,11 @@
         });
       }
 
+      // ホストがルームを作成するとこのイベントが起きbattle_infoのplayer1にセット。
+      channel.bind('App\\Events\\RoomCreated', function(data) {
+        console.log(test)
+      })
+
       channel.bind('App\\Events\\AttackEvent', function(data) {
         console.log(data);
         fetch_battle_info(data.battle);

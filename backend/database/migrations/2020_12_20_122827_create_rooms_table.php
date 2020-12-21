@@ -19,6 +19,7 @@ class CreateRoomsTable extends Migration
             $table->boolean('betting_flg')->default(true);
             $table->boolean('active_flg')->default(true);
             $table->boolean('secret_flg')->default(false);
+            $table->boolean('can_join_flg')->default(true);
             $table->string('password')->default('hoge');
             $table->timestamps();
         });

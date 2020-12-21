@@ -18,6 +18,6 @@ class Team extends Model
     }
 
     public function characters() {
-        return $this->belogsToMasy('App\Models\Character');
+        return $this->belongsToMany('App\Models\Character');
     }
 }

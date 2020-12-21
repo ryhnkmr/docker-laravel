@@ -17,7 +17,6 @@ class RoomUserTable extends Migration
             $table->id();
             $table->integer('room_id');
             $table->integer('user_id');
-            $table->boolean('host_flg');
             $table->timestamps();
         });
     }
