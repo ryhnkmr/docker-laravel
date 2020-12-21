@@ -123,23 +123,10 @@ function rakuten_info(isbn){
             $("#r_genre").text(r_genre);
         }
 
-        // rakuten app
-        // → calc -> crate_name;
-        // -> get_thumbnail -> create_canvas -> post_picto -> パス受け取れる 
-        // -> post_param
-
         calc_param();  //パラメータ計算
+        get_thumbnail(thumbnail_origin); // クロスサイト回避→キャンバス合成
+        console.log(pictoURL);
 
-        get_thumbnail(thumbnail_origin); // クロスサイト回避 
-        // create_canvas()//キャンバス合成
-        // post_picto(pictoURL);
-        // post_param(hp,ap,dp);
-        // console.log(pictoURL);
-        // console.log(hp); //hp, ap , dp OK
-        // await get_thumbnail(thumbnail_origin); // クロスサイト回避 
-        // let new_thumbnail_src = get_thumbnail(thumbnail_origin)
-        // .then(console.log(new_thumbnail_src));
-        // .then(create_canvas(//キャンバス合成
     });
 }
 
@@ -181,6 +168,7 @@ function calc_param(){
 
     //キャラパラメーター表示
     show_char_data(hp, ap, dp, r_BookThumbnail);
+    post_param(hp,ap,dp);
 }
 
 //キャラパラメーター表示（更新予定）
@@ -197,29 +185,21 @@ function show_char_data(hp, ap, dp, r_BookThumbnail){
 // ************************
 // // クロスサイト回避の機能 //楽天BOOKS_APIで読み込み
 // ************************
-// let result_url;
-async function get_thumbnail(thumbnail_origin){
-    const data = await axios.post('api/picto', {
+
+let new_thumbnail_src = 0;
+function get_thumbnail(thumbnail_origin){
+    axios.post('api/picto', {
         url: thumbnail_origin
-    });
-    create_canvas(data.data);
-    // post_picto();
+    }).then(function(data){//成功->表示処理を書く
+        new_thumbnail_src = data.data;
+        // console.log(new_thumbnail_src);
+        create_canvas(new_thumbnail_src);
+        },
+        function(){ //失敗
+            alert("呼び出し失敗");
+        }
+    );
 };
-
-
-// function get_thumbnail(thumbnail_origin){
-//     axios.post('api/picto', {
-//         url: thumbnail_origin
-//     }).then(function(data){//成功->表示処理を書く
-//         result_url = data.data;
-//         create_canvas(data.data);
-//         },
-//         function(){ //失敗
-//             alert("呼び出し失敗");
-//         }
-//     );
-//     return result_url;
-// };
 
 
 // ************************
@@ -229,7 +209,8 @@ async function get_thumbnail(thumbnail_origin){
 const arms_pass = "./img/char_img/arm_01_200_200.png";
 const eyes_pass = './img/char_img/eye_salary_200_200.png';
 
-let pictoURL;
+let pictoURL = 0;
+console.log(pictoURL);
 //canvas3
 let canvas=document.getElementById("canvas3");
 let ctx=canvas.getContext("2d");
@@ -241,52 +222,53 @@ let eyes = new Image();
 
 let base_img;
 
-//キャンバスで合成→保存
 function create_canvas(new_thumbnail_src){ //クロスサイト回避functionで読み込み
     //1.本の合成
     thumbnail.src = new_thumbnail_src;
-    thumbnail.onload = function() {
-    //本サムネイルのサイズを取得
-    let margin_left = (200 - thumbnail.width)/2; //中央揃えのためのマージン取得
-    ctx.drawImage(thumbnail, margin_left, 0, thumbnail.width, thumbnail.height);
-    }
-    //2.腕の合成
-    arms.src = "./img/char_img/arm_01_200_200.png"; //腕のパス
-    arms.onload = function() {
-        ctx.drawImage(arms, 0, 0, 200, 200);
-    }
-    //3.目の合成
-    eyes.src = "./img/char_img/eye_salary_200_200.png"; //目のパス
-    eyes.onload = function(){
-        ctx.drawImage(eyes, 0, 0, 200, 200);
-    }
-    post_picto();
-};
+    // thumbnail.src = thumbnail_origin ;//for test
+    // console.log(new_thumbnail_src);
 
-//pictoをpublicに保存
-function post_picto(){
-    //base64へ変換
-    let picto_url  = canvas.toDataURL("image/png").replace(new RegExp("data:image/png;base64,"),"");
-    console.log(picto_url);
-    axios.post('api/store_picto', {
-        picto_url: picto_url,
-        user_id: user_id
-    })
-    // .then(function(data, pictoURL){//成功->表示処理を書く
-    //     pictoURL = data.data;
-    //     // console.log(pictoURL);
-    //     },
-    //     function(){ //失敗
-    //         alert("呼び出し失敗");
-    //     }
-    // );
+    thumbnail.onload = function() {
+        //本サムネイルのサイズを取得
+        let margin_left = (200 - thumbnail.width)/2; //中央揃えのためのマージン取得
+        ctx.drawImage(thumbnail, margin_left, 0, thumbnail.width, thumbnail.height);
+
+        //2.腕の合成
+        arms.src = "./img/char_img/arm_01_200_200.png"; //腕のパス
+        arms.onload = function() {
+            ctx.drawImage(arms, 0, 0, 200, 200);
+            
+            //3.目の合成
+            eyes.src = "./img/char_img/eye_salary_200_200.png"; //目のパス
+            eyes.onload = function(){
+                ctx.drawImage(eyes, 0, 0, 200, 200);
+                //base64へ変換
+                let picto_url  = canvas.toDataURL("image/png").replace(new RegExp("data:image/png;base64,"),"");
+                // console.log(picto_url);
+                axios.post('api/store_picto', {
+                    picto_url: picto_url,
+                    user_id: user_id
+                }).then(function(data){//成功->表示処理を書く
+                    pictoURL = data.data;
+                    // console.log(pictoURL);
+                    post_param();
+                    },
+                    function(){ //失敗
+                        alert("呼び出し失敗");
+                    }
+                );
+            }
+        }
+    };
 }
 
 // ************************
 // テーブル挿入php用 axios通信
 // ************************
 
-function post_param(hp,ap,dp){
+function post_param(){
+    //アニメーション挿入部
+
     //apiに送信
     axios.post('api/test', {
         user_id: user_id,
@@ -294,21 +276,20 @@ function post_param(hp,ap,dp){
         hp: hp,
         ap: ap,
         dp: dp,
-        thumnailURL: r_BookThumbnail,
-        pictoURL: "test"
+        thumnailURL: thumbnail_origin,
+        pictoURL: pictoURL
     }).then(function(data){//成功->表示処理を書く
                 console.log(data);
             },
             function(){ //失敗
-                alert("呼び出し失敗2");
+                alert("呼び出し失敗");
             }
         );
 }
 
-thumbnail_origin = 'https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5705/9784774185705.jpg?_ex=200x200';
 $('#test').on('click', function() {
-    // post_param(hp,ap,dp);
-    get_thumbnail(thumbnail_origin);
+    post_param(hp,ap,dp);
+    // get_thumbnail(thumbnail_origin);
   });
 
 
