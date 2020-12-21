@@ -48015,9 +48015,9 @@ Quagga.onDetected(function (success) {
   if (calc(code)) // alert(code);
     if (code.slice(0, 3) == 978) {
       //isbnコード上3桁チェック
-      rakuten_info(code); //楽天API
-
       Quagga.stop(); //ビデオ停止
+
+      rakuten_info(code); //楽天API
 
       turn_off_video(); //ビデオ領域非表示
     }
@@ -48083,9 +48083,13 @@ function rakuten_info(isbn) {
       $("#r_size").text(r_size);
       $("#r_page").text(r_page);
       $("#r_genre").text(r_genre);
-    }
+    } // create_name(); //名前生成
 
+
+    console.log(charaName);
     calc_param(); //パラメータ計算
+
+    select_eyes(); //合成用の目
 
     get_thumbnail(thumbnail_origin); // クロスサイト回避→キャンバス合成
 
@@ -48097,6 +48101,116 @@ function rakuten_info(isbn) {
 function turn_off_video() {
   // 「id="jQueryBox"」を非表示
   $("#interactive").css("display", "none");
+} //**************************
+///////名前の生成ロジック
+//**************************
+
+
+var charaName;
+
+function create_name() {
+  function culc_rand_num(min, max) {
+    //ランダム生成の関数
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  var hiraToKana = function hiraToKana(text) {
+    //かな→カナ変換の関数
+    return text.replace(/[\u3042-\u3093]/g, function (m) {
+      return String.fromCharCode(m.charCodeAt(0) + 96);
+    });
+  };
+
+  var isbn_s = '9784492532706'; //★楽天APIの「isbn」
+
+  var booksGenreId_s = '1006018002'; //★ここに楽天APIの「booksGenreId」を入れる
+
+  var isbn = Number(isbn_s);
+  var booksGenreId = Number(booksGenreId_s);
+  var base_plus = isbn + booksGenreId;
+  var base_minus = isbn - booksGenreId;
+  var rand_lon = culc_rand_num(base_minus, base_plus);
+  var rand_lat = culc_rand_num(base_minus, base_plus);
+  var result1 = String(rand_lon);
+  var result2 = String(rand_lat);
+  var res1 = result1.slice(-3);
+  var res2 = result2.slice(-3);
+  var longitude = res1;
+  var latitude = res2;
+  var baseURL = 'https://api.what3words.com/v3/convert-to-3wa?key=Z9Y6EOLM';
+  var word = '';
+  axios.get(baseURL + '&coordinates=35.669' + latitude + ',139.703' + longitude + '&language=ja&format=json').then(function (response) {
+    console.log(response);
+    var words = response.data.words;
+    word = words.split('・'); //指定した区切りで分割して配列に格納
+
+    var nameParts = word[0];
+    var attribute = word[1];
+    var codeName = hiraToKana(word[2]);
+    var pub = '角川'; //★ここに楽天APIの「publisherName」を入れる
+
+    var plus = '';
+
+    if (pub.indexOf('角川') != -1) {
+      plus = 'KADOKAWA';
+    } else if (pub.indexOf('KADOKAWA') != -1) {
+      plus = 'KADOKAWA';
+    } else if (pub.indexOf('岩波') != -1) {
+      plus = 'ロック＆ウェーブ書店';
+    } else if (pub.indexOf('学研') != -1) {
+      plus = '学研';
+    } else if (pub.indexOf('幻冬舎') != -1) {
+      plus = '幻冬舎';
+    } else if (pub.indexOf('光文社') != -1) {
+      plus = '光文杜';
+    } else if (pub.indexOf('講談') != -1) {
+      plus = '講談杜';
+    } else if (pub.indexOf('集英') != -1) {
+      plus = 'ジャンプ杜';
+    } else if (pub.indexOf('新潮') != -1) {
+      plus = '新潮杜';
+    } else if (pub.indexOf('小学館') != -1) {
+      plus = 'Small学館';
+    } else if (pub.indexOf('主婦と生活') != -1) {
+      plus = '主婦と生活杜';
+    } else if (pub.indexOf('世界文化') != -1) {
+      plus = '世界文化杜';
+    } else if (pub.indexOf('スクウェア・エニックス') != -1) {
+      plus = 'FF&DQ杜';
+    } else if (pub.indexOf('ダイヤモンド') != -1) {
+      plus = '永遠の輝き杜';
+    } else if (pub.indexOf('宝島') != -1) {
+      plus = 'トレジャー島社';
+    } else if (pub.indexOf('徳間') != -1) {
+      plus = '徳間deジブリ書店';
+    } else if (pub.indexOf('日経') != -1) {
+      plus = '上から日経杜';
+    } else if (pub.indexOf('PHP') != -1) {
+      plus = 'PHP研究所';
+    } else if (pub.indexOf('扶桑') != -1) {
+      plus = '扶桑杜';
+    } else if (pub.indexOf('プレジデント') != -1) {
+      plus = '社長杜';
+    } else if (pub.indexOf('ベネッセ') != -1) {
+      plus = '昔は福武書店';
+    } else if (pub.indexOf('ポプラ') != -1) {
+      plus = 'ポプラ杜';
+    } else if (pub.indexOf('山と渓谷') != -1) {
+      plus = '山と渓谷';
+    } else {
+      plus = '有象無象';
+    }
+
+    charaName = codeName + ' @' + plus + "de" + jobName;
+    var jobs = ['勇者', '戦士', '武闘家', '魔法使い', '僧侶', '商人', '遊び人', '賢者', '盗賊', '踊り子', '吟遊詩人', 'CSV'];
+    var job_rand = culc_rand_num(1, jobs.length - 1);
+    var jobName = jobs[job_rand]; // player1.innerHTML = '名前：' + charaName;
+    // player2.innerHTML = '属性：' + attribute;
+    // player3.innerHTML = '職業：' + jobName;
+    // player4.innerHTML = 'CodeName：' + codeName;
+  })["catch"](function (error) {
+    console.log(error);
+  });
 } // ************************
 // パラメータ計算（楽天BOOKfunctionで読み込み）
 // ************************
@@ -48180,14 +48294,50 @@ function get_thumbnail(thumbnail_origin) {
 }
 
 ; // ************************
+// ///合成の下準備
+// ************************
+//ランダム生成の関数
+
+function culc_rand_num(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+var rand_2 = culc_rand_num(1, 2);
+var rand_3 = culc_rand_num(1, 3);
+var rand_6 = culc_rand_num(1, 6); //armパーツの選定
+
+var arm_img = '';
+arm_img = "./img/char_img/arm_" + rand_6 + ".png"; //console.log(arm_img);
+
+var eye_img = '';
+
+function select_eyes() {
+  //eyeパーツの選定
+  if (r_genre == "001" || r_genre == "021") {
+    //Group_a
+    eye_img = "./img/char_img/eye_a_01.png";
+  } else if (r_genre == "002" || r_genre == "008" || r_genre == "012" || r_genre == "016") {
+    //Group_b＋IMGファイルのストックは２
+    eye_img = "./img/char_img/eye_b_0" + rand_2 + ".png";
+  } else if (r_genre == "003" || r_genre == "004" || r_genre == "017" || r_genre == "019") {
+    //Group_c
+    eye_img = "./img/char_img/eye_c_01.png";
+  } else if (r_genre == "005" || r_genre == "006" || r_genre == "020") {
+    //Group_d＋IMGファイルのストックは２
+    eye_img = "./img/char_img/eye_d_0" + rand_2 + ".png";
+  } else if (r_genre == "007" || r_genre == "009" || r_genre == "010" || r_genre == "011" || r_genre == "028") {
+    //Group_e
+    eye_img = "./img/char_img/eye_e_01.png";
+  } else {
+    //Group_f
+    eye_img = "./img/char_img/eye_f_01.png";
+  }
+} // ************************
 // /////画像合成function
 // ************************
-// const thumbnail_origin = 'https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5705/9784774185705.jpg?_ex=200x200';
 
-var arms_pass = "./img/char_img/arm_01_200_200.png";
-var eyes_pass = './img/char_img/eye_salary_200_200.png';
-var pictoURL = 0;
-console.log(pictoURL); //canvas3
+
+var pictoURL = 0; //canvas3
 
 var canvas = document.getElementById("canvas3");
 var ctx = canvas.getContext("2d"); //イメージ作成
@@ -48195,13 +48345,11 @@ var ctx = canvas.getContext("2d"); //イメージ作成
 var thumbnail = new Image();
 var arms = new Image();
 var eyes = new Image();
-var base_img;
 
 function create_canvas(new_thumbnail_src) {
   //クロスサイト回避functionで読み込み
   //1.本の合成
-  thumbnail.src = new_thumbnail_src; // thumbnail.src = thumbnail_origin ;//for test
-  // console.log(new_thumbnail_src);
+  thumbnail.src = new_thumbnail_src;
 
   thumbnail.onload = function () {
     //本サムネイルのサイズを取得
@@ -48209,12 +48357,12 @@ function create_canvas(new_thumbnail_src) {
 
     ctx.drawImage(thumbnail, margin_left, 0, thumbnail.width, thumbnail.height); //2.腕の合成
 
-    arms.src = "./img/char_img/arm_01_200_200.png"; //腕のパス
+    arms.src = arm_img; //腕のパス
 
     arms.onload = function () {
       ctx.drawImage(arms, 0, 0, 200, 200); //3.目の合成
 
-      eyes.src = "./img/char_img/eye_salary_200_200.png"; //目のパス
+      eyes.src = eye_img; //目のパス
 
       eyes.onload = function () {
         ctx.drawImage(eyes, 0, 0, 200, 200); //base64へ変換
@@ -48263,6 +48411,8 @@ function post_param() {
 
 $('#test').on('click', function () {
   post_param(hp, ap, dp); // get_thumbnail(thumbnail_origin);
+
+  create_name(); //名前生成
 }); //改良必要：
 //apiデータなかった場合、ビデオ再表示・Guagga再起動
 //読み込み部分のサイズ変更とマスキング

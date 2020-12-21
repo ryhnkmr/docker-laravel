@@ -54,7 +54,8 @@
     </script>
     <script src="https://serratus.github.io/quaggaJS/examples/js/quagga.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js" integrity="sha512-DZqqY3PiOvTP9HkjIWgjO6ouCbq+dxqWoJZ/Q+zPYNHmlnI2dQnbJ5bxAHpAMw+LXRm4D72EIRXzvcHQtE8/VQ==" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://assets.what3words.com/sdk/v3/what3words.js?key=Z9Y6EOLM"></script>
     <script src="/js/app.js"></script>
 
 </body>
