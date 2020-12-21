@@ -1,4 +1,6 @@
-//バーコードリーダー機能
+// ************************
+// //バーコードリーダー機能//
+// ************************
 // Quagga.init({
 // inputStream: {
 //     name: 'Live',
@@ -56,6 +58,10 @@ if(calc(code))
     }
 })
 
+
+// ************************
+// ////楽天ブックfunction
+// ************************
 //楽天API用の変数用意
 let r_BookTitle;
 let r_isbn13;
@@ -120,13 +126,16 @@ function rakuten_info(isbn){
     });
 }
 
-//ビデオ表示オフ
+
+//ビデオ表示オフ (Quaggaで呼び出し)
 function turn_off_video(){
     // 「id="jQueryBox"」を非表示
     $("#interactive").css("display", "none");
 }
 
-//パラメータ計算
+// ************************
+// //パラメータ計算 (楽天Book apiで呼び出し)
+// ************************
 function calc_param(){
     //パラメータ計算の前準備
     let date = r_PublishedDate.replace(/年/g,'').replace(/月/g,'').slice(0, 6); //出版日の整形
@@ -187,49 +196,54 @@ let eyes = new Image();
 
 let base_img;
 
-// axios通信を開始
+//合成function(クロスサイト回避functionで読みこむ)
+function create_canvas(new_thumbnail_src){
+    //1.本の合成
+    thumbnail.src = new_thumbnail_src;
+
+    thumbnail.onload = function() {
+        //本サムネイルのサイズを取得
+        let img_width = thumbnail.width;  // 幅
+        let img_height = thumbnail.height; // 高さ
+        let margin_left = (200 - thumbnail.width)/2; //中央揃えのためのマージン取得
+        ctx.drawImage(thumbnail, margin_left, 0, thumbnail.width, thumbnail.height);
+
+        //2.腕の合成
+        arms.src = "./img/char_img/arm_01_200_200.png";
+        arms.onload = function() {
+            ctx.drawImage(arms, 0, 0, 200, 200);
+            
+            //3.目の合成
+            eyes.src = "./img/char_img/eye_salary_200_200.png";
+            eyes.onload = function(){
+                ctx.drawImage(eyes, 0, 0, 200, 200);
+                //base64へ変換
+                // let img = c.toDataURL("image/png"); //localhostではエラー
+                // console.log(img);
+                // document.write('<img src="' + img + '" width="200" height="200"/>');
+            }
+        }
+    };
+}
+
+// ************************
+// //クロスサイト回避function
+// ************************
+let new_thumbnail_src = 0;
 function get_thumbnail(thumbnail_origin){
     axios.post('api/picto', {
         url: thumbnail_origin
     }).then(function(data){//成功->表示処理を書く
-            console.log(data);
-
-            // //1.本の合成
-            // // console.log(data);
-            // thumbnail.src = data;
-            // // thumbnail.src = thumbnail_origin ;//for test
-            // // console.log(thumbnail.src);
-
-            // thumbnail.onload = function() {
-            //     //本サムネイルのサイズを取得
-            //     let img_width = thumbnail.width;  // 幅
-            //     let img_height = thumbnail.height; // 高さ
-            //     let margin_left = (200 - thumbnail.width)/2; //中央揃えのためのマージン取得
-            //     ctx.drawImage(thumbnail, margin_left, 0, thumbnail.width, thumbnail.height);
-
-            //     //2.腕の合成
-            //     arms.src = "./img/02.png";
-            //     arms.onload = function() {
-            //         ctx.drawImage(arms, 0, 0, 200, 200);
-                    
-            //         //3.目の合成
-            //         eyes.src = "./img/01.png";
-            //         eyes.onload = function(){
-            //             ctx.drawImage(eyes, 0, 0, 200, 200);
-            //             //base64へ変換
-            //             let img = c.toDataURL("image/png"); //localhostではエラー
-            //             // console.log(img);
-            //             // document.write('<img src="' + img + '" width="200" height="200"/>');
-            //         }
-            //     }
-            // };
+        new_thumbnail_src = data;
+        // console.log(new_thumbnail_src);
+        create_canvas(new_thumbnail_src);//キャンバス作成
         },
         function(){ //失敗
-            alert("呼び出し失敗");
+            alert("合成失敗");
         }
     );
+};
 
-}
 
 // ************************
 // テーブル挿入php用 axios通信
@@ -258,7 +272,7 @@ function post_param(hp,ap,dp){
 
 $('#test').on('click', function() {
     post_param(hp,ap,dp);
-    get_thumbnail(thumbnail_origin)
+    get_thumbnail(thumbnail_origin);
   });
 
 
