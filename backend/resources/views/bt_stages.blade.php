@@ -32,7 +32,7 @@
         background-color:#000000;
         opacity:0.5;
         visibility:hidden;
-        z-index:1;
+        z-index:2;
         }
 
         /* 攻撃ボタン */
@@ -45,7 +45,7 @@
             border-bottom: solid 4px #627295;
             border-radius: 3px;
             width:100px;
-            height:100px;
+            height:80px;
         }
         .btn-square:active {
             /*ボタンを押したとき*/
@@ -53,11 +53,39 @@
             transform: translateY(4px);/*下に動く*/
             border-bottom: none;/*線を消す*/
         }
+        .win_result{
+            position:absolute; 
+            left:0px; width:50%;
+            height:100%; 
+            background-image: url({{ asset('img/win_anime.gif') }});
+            background-size: cover;
+        }
+        .lose_result{
+            position:absolute; 
+            right:0px; width:50%; 
+            height:100%; 
+            background-image: url({{ asset('img/lose_anime.gif') }});
+            background-size: cover;
+        }
 
- 
+        .result_bkRGBA{
+            height:100%;
+            background: rgba(255,255,255,0.3);
+            
+        }
 </style>
 
 <body>
+
+<figure>
+    <audio
+        controls
+        src="'music/bgm.mp3'">
+            Your browser does not support the
+            <code>audio</code> element.
+    </audio>
+</figure>
+
     <div clsass="container-fuluid">
         <!-- HP表示 -->
         <div class="row">
@@ -145,24 +173,39 @@
                     <!-- バトルステージ -->
                     <div class="main-column col-md-8" style="background-color:rgba(255,255,255,0.8);">
                         <div class="battle_stage"style="width:100%; height:350px;">
-                        
+                            <!-- リザルト -->
+                            <!-- <div class="row mx-auto ">
+                                <div id="win">
+                                    <div class="win_result">
+                                        <div class="result_bkRGBA" class="mx-auto">
+                                            <img src="{{ asset( 'img/win_400.png')}}" style="padding:120px; padding-top:160px;">
+                                        </div>
+                                    </div>
+                                </div>      
+                                <div id="lose">
+                                    <div class="lose_result">
+                                        <div class="result_bkRGBA" class="mx-auto">
+                                            <img src="{{ asset( 'img/lose_400.png')}}" style="padding:120px; padding-top:160px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+
                             <div class="row" style="text-align:center; margin:0 auto;">
 
                                 <div class="mt-3 mx-auto " style="width:350px;height:340px;">
-                                    <div id="elem"><img src="{{ asset('img/chara1.png')}}" class="" style="margin:65px;"></div>
+                                    <div id="elem"><img src="{{ asset('img/picto_img/chara1.png')}}" style="margin:25px;"></div>
                                 </div>
                                 
                                 <div class=" mt-3 mx-auto" style="width:200px;height:340px">
-                                    <h4 class="btn-square" style="margin-top: 240px; padding-top:36px;">攻撃</h4>
+                                    <h4 class="btn-square" style="margin-top: 255px; padding-left: 17px; padding-top: 20px;">Atacc!</h4>
                                 </div>
 
                                 <div class="mt-3 mx-auto" style="width:350px;height:340px">
-                                    <div id="elem2"><img src="{{ asset('img/chara2.png')}}" style="margin:65px;"></div>
+                                    <div id="elem2"><img src="{{ asset('img/picto_img/chara2.png')}}" style="margin:25px;"></div>
                                 </div>
                             
-                            
-                            
-                            
+
                             
                             </div>
                         </div>    
@@ -196,8 +239,8 @@
                     <div>
                         <h3 style="text-align: center;">BET</h3>
                                 <!-- BETバロメーター width:値にplayer1のBET割合を入れる -->
-                        <div class="bet-meter progress bg-primary border border-white mx-auto" style="width:1000px;">
-                            <div class="progress-bar bg-danger " role="progressbar"
+                        <div class="progress bg-primary border border-white mx-auto" style="width:1000px;">
+                            <div id="bet_meter" class="progress-bar bg-danger " role="progressbar"
                                 style="width: 40%"></div>
                         </div>
                     </div>
@@ -227,8 +270,7 @@
         <div id="fadeLayer"></div>
 
 
-         <!-- リザルト -->
-       <div ></div>
+
         
             
         
@@ -241,81 +283,86 @@
 
 
     <script>
-    attac.addEventListner('click', function(){
-        player1_attack();
 
-    })
 
-    function player1_attack(){
-        animate(
-            targets: elem,
-            keyframes: [
-                {translateX: 700},
-                {translateX: 600},
-                {translateX: 700},
-                {translateX: 0}
-            ],
-            duration: 800,
-            easing: 'easeOutElastic(1, .8)',
-            loop: 1)
-    }
 
-    function player2_attack(){
-        animate(
-            targets: elem2,
-                keyframes: [
-                    {translateX: -700},
-                    {translateX: -600},
-                    {translateX: -700},
-                    {translateX: 0}
-                    ],
-                duration: 800,
-                easing: 'easeOutElastic(1, .8)',
-                loop: 1)
+    // function setBalometer(){
+    //     let num =40;
+    //     let style = "width:" + num + "%";
+    //     elt.setAttribute("style",style);
+    // }
 
-    }
+    // attac_animation.addEventListner('click', function() {
+    //     player1_attack(); 
+    //   })
 
-    // キャラクター攻撃アニメーション
-    // var elem = document.getElementById('elem');
-    //     elem.addEventListener('click',function(){
-    //         anime({
+    //   function player1_attack() {
+    //     animate(
     //             targets: elem,
-    //                 keyframes: [
-    //                     {translateX: 700},
-    //                     {translateX: 600},
-    //                     {translateX: 700},
-    //                     {translateX: 0}
-    //                  ],
-    //                 duration: 800,
-    //                 easing: 'easeOutElastic(1, .8)',
-    //                 loop: 1
-    //             })
-    //         })
+    //             keyframes: [
+    //                 {translateX: 700},
+    //                 {translateX: 600},
+    //                 {translateX: 700},
+    //                 {translateX: 0}
+    //             ],
+    //             duration: 800,
+    //             easing: 'easeOutElastic(1, .8)',
+    //             loop: 1
 
-    // var elem2 = document.getElementById('elem2');
-    //     elem2.addEventListener('click',function(){
-    //         anime({
-    //             targets: elem2,
-    //                 keyframes: [
-    //                     {translateX: -700},
-    //                     {translateX: -600},
-    //                     {translateX: -700},
-    //                     {translateX: 0}
-    //                  ],
-    //                 duration: 800,
-    //                 easing: 'easeOutElastic(1, .8)',
-    //                 loop: 1
+    //     )
+      
+    
+    
+    
+    
+    
+    
+    
+    
+    // キャラクター攻撃アニメーション
+    var elem = document.getElementById('elem');
+        elem.addEventListener('click',function(){
+            anime({
+                targets: elem,
+                    keyframes: [
+                        {translateX: 700},
+                        {translateX: 600},
+                        {translateX: 700},
+                        {translateX: 0}
+                     ],
+                    duration: 800,
+                    easing: 'easeOutElastic(1, .8)',
+                    loop: 1
+                })
+            })
 
-    //             })
+    var elem2 = document.getElementById('elem2');
+        elem2.addEventListener('click',function(){
+            anime({
+                targets: elem2,
+                    keyframes: [
+                        {translateX: -700},
+                        {translateX: -600},
+                        {translateX: -700},
+                        {translateX: 0}
+                     ],
+                    duration: 800,
+                    easing: 'easeOutElastic(1, .8)',
+                    loop: 1
 
-    //     })
+                })
+
+        })
 
     // 画面黒フェード
         function fade(){
             var target = document.getElementById("fadeLayer");
             target.style.visibility = "visible";
         }
-
+    //戦闘音楽
+    var bgm = new Audio();
+        bgm.src = "bgm.mp3";
+        bgc.play();
 
     </script>
 
