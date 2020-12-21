@@ -3,8 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Character;
 use App\Models\User;
+
 // use Validator;
 
 /*
@@ -26,31 +28,30 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // 挿入処理を書いてみて、通ったらcontrollerに移行する。 Api controller '書き方例：CharactersController@store'
 Route::post('/test', function (Request $request) {
     // キャラ生成
-    $characters = Character::create([
-        'user_id'=> $request->user_id,
-        'name'=> $request->name,
-        'hp'=>$request->hp,
-        'ap'=>$request->ap,
-        'dp'=>$request->dp,
-        'thumnailURL'=>$request->thumnailURL,
-        'pictoURL'=>$request->pictoURL,
+    $character = Character::create([
+        'user_id' => $request->user_id,
+        'name' => $request->name,
+        'hp' => $request->hp,
+        'ap' => $request->ap,
+        'dp' => $request->dp,
+        'thumnailURL' => $request->thumnailURL,
+        'pictoURL' => $request->pictoURL,
     ]);
-    return "ok";
+    return $character;
 });
 
 // 画像合成用（クロスサイト対策）
 Route::post('/picto', function (Request $request) {
-    $result = "data:image/jpeg;base64," .base64_encode(file_get_contents($request->url)); 
+    $result = "data:image/jpeg;base64," . base64_encode(file_get_contents($request->url));
     return $result;
 });
 
 Route::post('/store_picto', function (Request $request) {
     $picto = $request->picto_url;
-    $file_name = date("Ymd-His"). ($request->user_id).".png";
-    $fp = fopen($file_name,'w');
-    fwrite($fp,base64_decode($picto));
-    fclose($fp);
-    return $result;
+    $picto = base64_decode($picto);
+    $file_name = date("Ymd-His") . "-" . ($request->user_id) . ".png";
+    Storage::disk('public_uploads')->put($file_name, $picto);
+    return 'img/picto_img/'.$file_name ;
 });
 
 

@@ -41,7 +41,7 @@
         <div>レベル: <span id="lv"></span></div>
         <div id="r_BookThumbnail"></div>
     </div>
-
+    
     <!-- キャンバス（画像合成部） -->
     <div class="can3">
         <canvas id="canvas3" width=200 height=200></canvas>
