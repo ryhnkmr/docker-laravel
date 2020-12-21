@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Log;
 
 class RoomController extends Controller
 {
@@ -14,7 +15,8 @@ class RoomController extends Controller
      */
     public function index()
     {
-        //
+        $rooms = Room::all();
+        return view('rooms.index')->with('rooms', $rooms);
     }
 
     /**
@@ -24,7 +26,7 @@ class RoomController extends Controller
      */
     public function create()
     {
-        //
+        return view('rooms.create');
     }
 
     /**
@@ -35,7 +37,8 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Room::create($request->all());
+        return redirect()->route('rooms.index')->with('success', '新規登録完了しました');
     }
 
     /**
@@ -46,7 +49,8 @@ class RoomController extends Controller
      */
     public function show(Room $room)
     {
-        //
+        Log::debug($room);
+        return view('rooms.show')->with('room', $room);
     }
 
     /**

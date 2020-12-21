@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoomController;
 
 
 /*
@@ -25,15 +26,17 @@ Route::get('/room', function () {
     event(new Battle);
     return view('test');
 });
-Route::get('/create_characters', function () {
-    return view('create_characters');
-});
 
 Auth::routes();
 
-Route::get('/create_characters', function () {
-    return view('create_characters');
-});
+
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'home']);
+    Route::get('/create_characters', function () {
+        return view('create_characters');
+    });
+    
+    Route::resource('rooms', RoomController::class);
 });
+
+

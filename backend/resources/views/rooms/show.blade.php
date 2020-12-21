@@ -23,6 +23,7 @@
     <script>
       Pusher.logToConsole = false;
       current_user_id = <?php echo(Auth::user()->id) ?>;
+      room_id = <?php echo($room->id) ?>;
       battle_info = {
         info: {
           tern: 1,
@@ -101,11 +102,11 @@
         }, 
       ];
       
-      var pusher = new Pusher('52ce419442d9e72911ab', {
+      var pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
         cluster: 'ap3'
       });
 
-      var channel = pusher.subscribe('battle');
+      var channel = pusher.subscribe('rooms.'+ room_id);
       channel.bind('App\\Events\\Battle', function(data) {
         // battle_infoをsetする
         player1 = [
@@ -186,12 +187,6 @@
 
       attack_btn = document.getElementById('attack');
       // host: player1, guest: player2
-      
-      if (battle_info.player1[0].chara.user_id != current_user_id) {
-        attack_btn.disabled = false;
-      } else {
-        attack_btn.disabled = true;
-      }
 
       player1_hp = document.getElementById('player1_current_hp');
       player2_hp = document.getElementById('player2_current_hp');
@@ -220,8 +215,6 @@
       //    攻撃を受ける 
       // 3. ラウンド終了フェイズ
       //    バトルインフォの更新、ネクストラウンドに移行
-
-
       
       // MEMO: ラウンド準備フェイズ
       // ToDo: キャラ選択、その情報をbroadcastする、バトルインフォのセット
@@ -229,17 +222,18 @@
       // MEMO: 戦闘フェイズ及びそれ関連の処理
       // 自分が先攻で先攻のターンのときか自分が後攻で後攻のターンのときボタンが押せる
       // 自分が先攻の場合
-      if (player1[0].chara.user_id == current_user_id && battle_info.info.first_flg) { 
-        attack_btn.disabled = false;
-      // 自分が後攻の場合
-      } else if (player2[0].chara.user_id == current_user_id && !battle_info.info.first_flg) {
-        attack_btn.disabled = false;
-      } else {
-        attack_btn.disabled = true; 
+      function controll_attack_btn() {
+        if (battle_info.player1[0].chara.user_id == current_user_id && battle_info.info.first_flg) { 
+          attack_btn.disabled = false;
+        } else if (battle_info.player2[0].chara.user_id == current_user_id && !battle_info.info.first_flg) {
+          attack_btn.disabled = false;
+        } else {
+          attack_btn.disabled = true; 
+        }
       }
-
+      
       attack_btn.onclick = function () {
-        axios.post('/api/battle', battle_info ).then(function (response) {
+        axios.post('/api/rooms/'+ room_id + '/attack', battle_info ).then(function (response) {
           console.log(response);
         })
         .catch(function (error) {
@@ -248,6 +242,7 @@
       }
 
       channel.bind('App\\Events\\AttackEvent', function(data) {
+        console.log(data);
         fetch_battle_info(data.battle);
         // MEMO: 先攻後攻を3項演算子で判定
         attacker_info = battle_info.info.first_flg? battle_info.player1[0] : battle_info.player2[0];
@@ -262,6 +257,7 @@
         
         check_hp_and_delete_dead_chara(defender_info);
         update_battle_info();
+        controll_attack_btn();
         check_match_result();
         player1_hp.innerHTML = battle_info.player1[0].hp;
         player2_hp.innerHTML = battle_info.player2[0].hp;

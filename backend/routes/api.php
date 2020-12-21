@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Character;
+use App\Models\Room;
 // use Validator;
 
 /*
@@ -55,16 +56,20 @@ Route::post('/api/user/{{Auth::user()->id}}/characters', function (Request $requ
 
 use App\Events\AttackEvent;
 
-Route::post('/battle',function(Request $request){
+Route::post('/rooms/{id}/attack',function($id, Request $request){
 
+    Log::debug($id);
     $battle = [
        'info'=> $request->info,
        'player1'=> $request->player1,
        'player2'=> $request->player2,
     ];
 
-    event(new AttackEvent($battle));
-    Log::debug($request);
-
+    event(new AttackEvent($battle, $id));
     return $battle;
+});
+
+Route::post('rooms', function(Request $request) {
+    $room = Room::create($request->all());
+    return $room;
 });

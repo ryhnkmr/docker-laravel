@@ -20,10 +20,13 @@ class AttackEvent implements ShouldBroadcast
      * @return void
      */
     public $battle;
-    public function __construct($battle)
+    public $room_id;
+
+    public function __construct($battle, $id)
     {
         //
         $this->battle = $battle;
+        $this->room_id = $id;
     }
 
     /**
@@ -33,6 +36,6 @@ class AttackEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('battle', $this->battle);
+        return new Channel('rooms.'.$this->room_id, $this->battle);
     }
 }
