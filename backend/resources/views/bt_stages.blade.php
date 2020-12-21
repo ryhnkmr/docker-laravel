@@ -86,7 +86,12 @@
     <div>
         <p hidden id="attack_se">ああああ</p>
         <audio id="attack_audio"></audio>
-    
+    </div>
+    <!-- リザルト -->
+    <div>
+        <p hidden id="bgm_result">リザルト音楽</p>
+        <p hidden id="bgm_result_stp">リザルト音楽停止</p>
+        <audio id="bgm_result_audio"></audio>
     </div>
 
     <div clsass="container-fuluid">
@@ -161,15 +166,15 @@
         <div style="background-image: url({{ asset('img/books.jpg') }});">
             <div style="height: 100%; background: rgba(255,255,255,0.5);">
                 <div class="row">
-                    <div class="left-column col-md-2 mt-5" style="height:400px;">
-                        <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
-                            <img src="https://placehold.jp/100x100.png" alt="">
+                    <div class="left-column col-md-2" style="height:400px; padding-top:30px; padding-right:55px;">
+                        <div class="mx-auto" style="width:100px; height:100px">
+                            <img src="{{asset('img/book_1st.png')}}">
                         </div>
-                        <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
-                            <img src="https://placehold.jp/100x100.png" alt="">
+                        <div class="mx-auto" style="width:100px; height:100px; margin:60px 0px;">
+                            <img src="{{asset('img/book_2nd.png')}}">
                         </div>
-                        <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
-                            <img src="https://placehold.jp/100x100.png" alt="">
+                        <div class="mx-auto" style="width:100px; height:100px">
+                            <img src="{{asset('img/book_3rd.png')}}">
                         </div>
                     </div>
                     
@@ -196,18 +201,21 @@
 
                             <div class="row" style="text-align:center; margin:0 auto;">
 
+                                <div>
+                                    <div hidden id="attack_icon"><img src="{{ asset('img/attack_icon.png')}}" ></div>
+                                </div>
+
                                 <div class="mt-3 mx-auto " style="width:350px;height:340px;">
                                     <div id="elem"><img src="{{ asset('img/picto_img/chara1.png')}}" style="margin:25px;"></div>
                                 </div>
                                 
                                 <div class=" mt-3 mx-auto" style="width:200px;height:340px">
-                                    <h4 class="btn-square" style="margin-top: 255px; padding-left: 17px; padding-top: 20px;">Atacc!</h4>
+                                    <h4 class="btn-square" style="margin-top: 255px; padding-left: 13px; padding-top: 22px;">Attack!</h4>
                                 </div>
 
                                 <div class="mt-3 mx-auto" style="width:350px;height:340px">
                                     <div id="elem2"><img src="{{ asset('img/picto_img/chara2.png')}}" style="margin:25px;"></div>
                                 </div>
-                            
 
                             
                             </div>
@@ -222,17 +230,17 @@
                         
                     </div>
 
-                        <div class="rite-column col-md-2 mt-5" style="height:400px;">
-                            <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
-                                <img src="https://placehold.jp/100x100.png" alt="">
-                            </div>
-                            <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
-                                <img src="https://placehold.jp/100x100.png" alt="">
-                            </div>
-                            <div class="m-4 border border-dark mx-auto" style="width:100px; height:100px">
-                                <img src="https://placehold.jp/100x100.png" alt="">
-                            </div>
+                    <div class="left-column col-md-2" style="height:400px; padding-top:30px; padding-right:55px;">
+                        <div class="mx-auto" style="width:100px; height:100px">
+                            <img src="{{asset('img/book_1st.png')}}">
                         </div>
+                        <div class="mx-auto" style="width:100px; height:100px; margin:60px 0px;">
+                            <img src="{{asset('img/book_2nd.png')}}">
+                        </div>
+                        <div class="mx-auto" style="width:100px; height:100px">
+                            <img src="{{asset('img/book_3rd.png')}}">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -241,7 +249,7 @@
                 <div class="col-md-12 p-2" style="background:#fa5246; height:80px">
                     <div>
                         <h3 style="text-align: center;">BET</h3>
-                                <!-- BETバロメーター width:値にplayer1のBET割合を入れる -->
+                        <!-- BETバロメーター width:値にplayer1のBET割合を入れる -->
                         <div class="progress bg-primary border border-white mx-auto" style="width:1000px;">
                             <div id="bet_meter" class="progress-bar bg-danger " role="progressbar"
                                 style="width: 40%"></div>
@@ -271,10 +279,6 @@
         <!-- 画面暗くする -->
         <a href="javascript:void(0);" onclick="fade();">黒フェード</a>
         <div id="fadeLayer"></div>
-
-
-
-        
             
         
     </div>
@@ -317,44 +321,58 @@
             attack_audio.src="{{ asset( 'music/attack.mp3' )}}";
             attack_audio.play(); //audioを再生
             });
+
+    //リザルト音楽
+        var bgm_result  = document.getElementById("bgm_result"); //document.getElementByIdを使ってHTMLのbtnというIDを取得
+        
+        bgm_result.addEventListener('click', function(){   //もしbtn(再生)をクリックしたら..
+            bgm_result_audio.src="{{ asset( 'music/result.mp3' )}}";
+            bgm_result_audio.play(); //audioを再生
+            });
+
+        bgm_result_stp.addEventListener('click', function(){
+            bgm_result_audio.pause(); //audioを止める
+            bgm_result_audio.currentTime = 0; //時間を０に
+        });
         
 
 
 
     // キャラクター攻撃アニメーション
-    var elem = document.getElementById('elem');
-        elem.addEventListener('click',function(){
-            anime({
-                targets: elem,
-                    keyframes: [
-                        {translateX: 700},
-                        {translateX: 600},
-                        {translateX: 700},
-                        {translateX: 0}
-                     ],
-                    duration: 800,
-                    easing: 'easeOutElastic(1, .8)',
-                    loop: 1
+        var elem = document.getElementById('elem');
+            elem.addEventListener('click',function(){
+                anime({
+                    targets: elem,
+                        keyframes: [
+                            {translateX: 700},
+                            {translateX: 600},
+                            {translateX: 700},
+                            {translateX: 0}
+                        ],
+                        duration: 800,
+                        easing: 'easeOutElastic(1, .8)',
+                        loop: 1
+                    })
                 })
+
+        var elem2 = document.getElementById('elem2');
+            elem2.addEventListener('click',function(){
+                anime({
+                    targets: elem2,
+                        keyframes: [
+                            {translateX: -700},
+                            {translateX: -600},
+                            {translateX: -700},
+                            {translateX: 0}
+                        ],
+                        duration: 800,
+                        easing: 'easeOutElastic(1, .8)',
+                        loop: 1
+
+                    })
+
             })
 
-    var elem2 = document.getElementById('elem2');
-        elem2.addEventListener('click',function(){
-            anime({
-                targets: elem2,
-                    keyframes: [
-                        {translateX: -700},
-                        {translateX: -600},
-                        {translateX: -700},
-                        {translateX: 0}
-                     ],
-                    duration: 800,
-                    easing: 'easeOutElastic(1, .8)',
-                    loop: 1
-
-                })
-
-        })
 
     // 画面黒フェード
         function fade(){
