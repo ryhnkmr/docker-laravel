@@ -1,33 +1,33 @@
 //バーコードリーダー機能
-Quagga.init({
-inputStream: {
-    name: 'Live',
-    type: 'LiveStream',
-    target: document.querySelector('#interactive'),//埋め込んだdivのID
-    constraints: {
-    facingMode: 'environment',
-    },
-    area: {//必要ならバーコードの読み取り範囲を調整
-    top: "0%",
-    right: "0%",
-    left: "0%",
-    bottom: "0%"
-    },
-},
-locator: {
-    patchSize: 'medium',
-    halfSample: true,
-},
-numOfWorkers: 2,
-decoder: {
-    readers: ['ean_reader']//ISBNは基本的にこれ（他にも種類あり）
-},
-locate: true,
-}, (err) => {
-if(!err) {
-    Quagga.start();
-}
-})
+// Quagga.init({
+// inputStream: {
+//     name: 'Live',
+//     type: 'LiveStream',
+//     target: document.querySelector('#interactive'),//埋め込んだdivのID
+//     constraints: {
+//     facingMode: 'environment',
+//     },
+//     area: {//必要ならバーコードの読み取り範囲を調整
+//     top: "0%",
+//     right: "0%",
+//     left: "0%",
+//     bottom: "0%"
+//     },
+// },
+// locator: {
+//     patchSize: 'medium',
+//     halfSample: true,
+// },
+// numOfWorkers: 2,
+// decoder: {
+//     readers: ['ean_reader']//ISBNは基本的にこれ（他にも種類あり）
+// },
+// locate: true,
+// }, (err) => {
+// if(!err) {
+//     Quagga.start();
+// }
+// })
 
 //ISBN13桁コードのチェックデジット
 const calc = isbn => {
@@ -156,6 +156,7 @@ function calc_param(){
 
     //キャラパラメーター表示
     show_char_data(hp, ap, dp, r_BookThumbnail);
+    post_param(hp,ap,dp);
 }
 
 //キャラパラメーター表示（更新予定）
@@ -171,29 +172,29 @@ function show_char_data(hp, ap, dp, r_BookThumbnail){
 //テーブル挿入php用 axios通信
 function post_param(hp,ap,dp){
     //アニメーション挿入部
-
-    //Ajax開始
-    $.ajax({
-        url:'/api/character',
-        type: 'POST',
-        dataType: 'json',
-        data:{
-            name: 'ブックン',
-            hp: hp,
-            ap: ap,
-            dp: dp
-        }
-    })
-    .then(
-        function(data){//成功->表示処理を書く
-        },
-        function(){ //失敗
-            alert("呼び出し失敗");
-        }
-    );
+        
+    //apiに送信
+    axios.post('api/test', {
+        user_id: user_id,
+        name: 'ブックン',
+        hp: 1,
+        ap: 2,
+        dp: 3,
+        thumnailURL: 'https://',
+        pictoURL: 'img/img.png'
+    }).then(
+            function(data){//成功->表示処理を書く
+                console.log(data);
+            },
+            function(){ //失敗
+                alert("呼び出し失敗");
+            }
+        );
 }
 
-
+$('#test').on('click', function() {
+    post_param(hp,ap,dp);
+  });
 
 
 //改良必要：

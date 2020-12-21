@@ -2,7 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Character;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Character;
+use App\Models\User;
 // use Validator;
 
 /*
@@ -20,10 +22,39 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/test', function (Request $request) {
+    // $user = Auth::user();
+    
+    // $user = User::find($id);
+    // キャラ生成
+    $characters = Character::create([
+        'user_id'=> $request->user_id,
+        'name'=> $request->name,
+        'hp'=>$request->hp,
+        'ap'=>$request->ap,
+        'dp'=>$request->dp,
+        'thumnailURL'=>$request->thumnailURL,
+        'pictoURL'=>$request->pictoURL,
+    ]);
+    return "ok";
+});
+// Route::post('/test', function (Request $request) {
+//     // キャラ生成
+//     $characters = new Character;
+//     $characters->user_id = Auth::user();
+//     $characters->name = $request->name;
+//     $characters->hp = $request->hp;
+//     $characters->ap = $request->ap;
+//     $characters->dp = $request->dp;
+//     $characters->thumnailURL = $request->thumnailURL;
+//     $characters->pictoURL = $request->pictoURL;
+//     $characters->save();
+//     return "ok";
+// });
+
 // post charのルーティング書く。
 // 挿入処理を書いてみて、通ったらcontrollerに移行する。 Api controller '書き方例：CharactersController@store'
-Route::post('/api/user/{{Auth::user()->id}}/characters', function (Request $request) {
-
+Route::post('/user/{{Auth::user()->id}}/characters', function (Request $request) {
     //キャラテーブル挿入
     // $validator = Validator::make($request->all(), [
     //     'user_id' => 'required',
@@ -55,11 +86,11 @@ Route::post('/api/user/{{Auth::user()->id}}/characters', function (Request $requ
 
 use App\Events\AttackEvent;
 
-Route::post('/battle',function(Request $request){
+Route::post('/battle', function (Request $request) {
 
     $battle = [
-       'tern'=> $request->tern,
-       'first_flg'=> $request->first_flg
+        'tern' => $request->tern,
+        'first_flg' => $request->first_flg
     ];
 
     event(new AttackEvent($battle));
