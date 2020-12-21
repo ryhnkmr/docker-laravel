@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/earlyaccess/nicomoji.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ asset('/img/favicon.ico') }}">
     <style>
     /* ボタンCSS */
         .join-button{
@@ -52,7 +53,7 @@
         
         <div class="row" style="margin-top:50px;">
             <div class="col-md-12 text-center">
-                <h1 class="wf-nicomoji" style="color:orange;">ブックdeバーコードバトラー</h1>
+                <p class="wf-nicomoji" style="color:orange; font-size:50px;">ブックdeバーコードバトラー</p>
             </div>
         </div>
         <div class="row" style="margin-top:30px;">
