@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
     <title>Create My Character with a Book</title>
 </head>
 
@@ -46,7 +47,7 @@
     <div class="can3">
         <canvas id="canvas3" width=200 height=200></canvas>
     </div>
-
+    
 
     <!-- guaggaとjquery、JSの読み込み -->
     <script type="text/javascript">
