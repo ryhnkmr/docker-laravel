@@ -76,15 +76,18 @@
 </style>
 
 <body>
-
-<figure>
-    <audio
-        controls
-        src="'music/bgm.mp3'">
-            Your browser does not support the
-            <code>audio</code> element.
-    </audio>
-</figure>
+    <!-- BGM -->
+    <div>
+        <p hidden id="bgm_play">BGM再生</p>
+        <p hidden id="bgm_stp">BGM停止</p>
+        <audio id="bgm_audio"></audio>
+    </div>
+    <!-- SE -->
+    <div>
+        <p hidden id="attack_se">ああああ</p>
+        <audio id="attack_audio"></audio>
+    
+    </div>
 
     <div clsass="container-fuluid">
         <!-- HP表示 -->
@@ -283,42 +286,41 @@
 
 
     <script>
+        // 音量調整
+        const media_vol_def = function(){
+            const audios=document.getElementsByTagName('audio');
+            for(let n=0; audios.length>n; n++){ audios[n].volume = 0.2; }
+        }
+
+        window.addEventListener('DOMContentLoaded', function(){
+            media_vol_def();
+        });
+
+        // BGM
+        var bgm_play  = document.getElementById("bgm_play"); //document.getElementByIdを使ってHTMLのbtnというIDを取得
+        var bgm_stp   = document.getElementById("bgm_stp");//document.getElementByIdを使ってHTMLのbtn2というIDを取得
+
+        bgm_play.addEventListener('click', function(){   //もしbtn(再生)をクリックしたら..
+            bgm_audio.src="{{ asset( 'music/bgm.mp3' )}}";
+            bgm_audio.play(); //audioを再生
+            });
+
+        bgm_stp.addEventListener('click', function(){
+            bgm_audio.pause(); //audioを止める
+            bgm_audio.currentTime = 0; //時間を０に
+        });
+
+    //SE音
+        var attack_se  = document.getElementById("attack_se"); //document.getElementByIdを使ってHTMLのbtnというIDを取得
+        
+        attack_se.addEventListener('click', function(){   //もしbtn(再生)をクリックしたら..
+            attack_audio.src="{{ asset( 'music/attack.mp3' )}}";
+            attack_audio.play(); //audioを再生
+            });
+        
 
 
 
-    // function setBalometer(){
-    //     let num =40;
-    //     let style = "width:" + num + "%";
-    //     elt.setAttribute("style",style);
-    // }
-
-    // attac_animation.addEventListner('click', function() {
-    //     player1_attack(); 
-    //   })
-
-    //   function player1_attack() {
-    //     animate(
-    //             targets: elem,
-    //             keyframes: [
-    //                 {translateX: 700},
-    //                 {translateX: 600},
-    //                 {translateX: 700},
-    //                 {translateX: 0}
-    //             ],
-    //             duration: 800,
-    //             easing: 'easeOutElastic(1, .8)',
-    //             loop: 1
-
-    //     )
-      
-    
-    
-    
-    
-    
-    
-    
-    
     // キャラクター攻撃アニメーション
     var elem = document.getElementById('elem');
         elem.addEventListener('click',function(){
@@ -359,10 +361,7 @@
             var target = document.getElementById("fadeLayer");
             target.style.visibility = "visible";
         }
-    //戦闘音楽
-    var bgm = new Audio();
-        bgm.src = "bgm.mp3";
-        bgc.play();
+
 
     </script>
 
