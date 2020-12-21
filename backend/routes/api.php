@@ -44,6 +44,15 @@ Route::post('/picto', function (Request $request) {
     return $result;
 });
 
+Route::post('/store_picto', function (Request $request) {
+    $picto = $request->picto_url;
+    $file_name = date("Ymd-His"). ($request->user_id).".png";
+    $fp = fopen($file_name,'w');
+    fwrite($fp,base64_decode($picto));
+    fclose($fp);
+    return $result;
+});
+
 
 
 use App\Events\AttackEvent;

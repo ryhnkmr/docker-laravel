@@ -1,35 +1,35 @@
 // ************************
-// //バーコードリーダー機能//
+//   バーコードリーダーQuagga
 // ************************
-// Quagga.init({
-// inputStream: {
-//     name: 'Live',
-//     type: 'LiveStream',
-//     target: document.querySelector('#interactive'),//埋め込んだdivのID
-//     constraints: {
-//     facingMode: 'environment',
-//     },
-//     area: {//必要ならバーコードの読み取り範囲を調整
-//     top: "0%",
-//     right: "0%",
-//     left: "0%",
-//     bottom: "0%"
-//     },
-// },
-// locator: {
-//     patchSize: 'medium',
-//     halfSample: true,
-// },
-// numOfWorkers: 2,
-// decoder: {
-//     readers: ['ean_reader']//ISBNは基本的にこれ（他にも種類あり）
-// },
-// locate: true,
-// }, (err) => {
-// if(!err) {
-//     Quagga.start();
-// }
-// })
+Quagga.init({
+inputStream: {
+    name: 'Live',
+    type: 'LiveStream',
+    target: document.querySelector('#interactive'),//埋め込んだdivのID
+    constraints: {
+    facingMode: 'environment',
+    },
+    area: {//必要ならバーコードの読み取り範囲を調整
+    top: "0%",
+    right: "0%",
+    left: "0%",
+    bottom: "0%"
+    },
+},
+locator: {
+    patchSize: 'medium',
+    halfSample: true,
+},
+numOfWorkers: 2,
+decoder: {
+    readers: ['ean_reader']//ISBNは基本的にこれ（他にも種類あり）
+},
+locate: true,
+}, (err) => {
+if(!err) {
+    Quagga.start();
+}
+})
 
 //ISBN13桁コードのチェックデジット
 const calc = isbn => {
@@ -58,9 +58,8 @@ if(calc(code))
     }
 })
 
-
 // ************************
-// ////楽天ブックfunction
+// ///楽天Book function
 // ************************
 //楽天API用の変数用意
 let r_BookTitle;
@@ -71,6 +70,7 @@ let r_BookDescription;
 let r_reviewCount;
 let r_reviewAverage;
 let r_BookThumbnail;
+let thumbnail_origin;
 let r_price;
 let r_size;
 let r_page;
@@ -92,6 +92,7 @@ function rakuten_info(isbn){
         r_reviewCount = data.Items[0].Item.reviewCount;
         r_reviewAverage = data.Items[0].Item.reviewAverage;
         r_BookThumbnail = '<img src=\"' + data.Items[0].Item.largeImageUrl + '\" />';
+        thumbnail_origin = data.Items[0].Item.largeImageUrl;
         r_price = data.Items[0].Item.itemPrice;
         r_size = data.Items[0].Item.size;
         r_page = data.Items[0].Item.reviewAverage;
@@ -123,18 +124,18 @@ function rakuten_info(isbn){
         }
         //パラメータ計算
         calc_param();
+        get_thumbnail(thumbnail_origin);
     });
 }
 
-
-//ビデオ表示オフ (Quaggaで呼び出し)
+//ビデオ表示オフ (ISBN読み取りと同時に起動)
 function turn_off_video(){
     // 「id="jQueryBox"」を非表示
     $("#interactive").css("display", "none");
 }
 
 // ************************
-// //パラメータ計算 (楽天Book apiで呼び出し)
+// パラメータ計算（楽天BOOKfunctionで読み込み）
 // ************************
 function calc_param(){
     //パラメータ計算の前準備
@@ -181,13 +182,13 @@ function show_char_data(hp, ap, dp, r_BookThumbnail){
 // ************************
 // /////画像合成function
 // ************************
-const thumbnail_origin = 'https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5705/9784774185705.jpg?_ex=200x200';
+// const thumbnail_origin = 'https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5705/9784774185705.jpg?_ex=200x200';
 const arms_pass = "./img/char_img/arm_01_200_200.png";
 const eyes_pass = './img/char_img/eye_salary_200_200.png';
 
 //canvas3
-let c=document.getElementById("canvas3");
-let ctx=c.getContext("2d");
+let canvas=document.getElementById("canvas3");
+let ctx=canvas.getContext("2d");
 
 //イメージ作成
 let thumbnail = new Image();
@@ -196,54 +197,63 @@ let eyes = new Image();
 
 let base_img;
 
-//合成function(クロスサイト回避functionで読みこむ)
 function create_canvas(new_thumbnail_src){
     //1.本の合成
     thumbnail.src = new_thumbnail_src;
+    // thumbnail.src = thumbnail_origin ;//for test
+    // console.log(new_thumbnail_src);
 
     thumbnail.onload = function() {
         //本サムネイルのサイズを取得
-        let img_width = thumbnail.width;  // 幅
-        let img_height = thumbnail.height; // 高さ
         let margin_left = (200 - thumbnail.width)/2; //中央揃えのためのマージン取得
         ctx.drawImage(thumbnail, margin_left, 0, thumbnail.width, thumbnail.height);
 
         //2.腕の合成
-        arms.src = "./img/char_img/arm_01_200_200.png";
+        arms.src = "./img/char_img/arm_01_200_200.png"; //腕のパス
         arms.onload = function() {
             ctx.drawImage(arms, 0, 0, 200, 200);
             
             //3.目の合成
-            eyes.src = "./img/char_img/eye_salary_200_200.png";
+            eyes.src = "./img/char_img/eye_salary_200_200.png"; //目のパス
             eyes.onload = function(){
                 ctx.drawImage(eyes, 0, 0, 200, 200);
                 //base64へ変換
-                // let img = c.toDataURL("image/png"); //localhostではエラー
-                // console.log(img);
-                // document.write('<img src="' + img + '" width="200" height="200"/>');
+                let picto_url  = canvas.toDataURL("image/png").replace(new RegExp("data:image/png;base64,"),"");
+                // console.log(picto_url);
+                axios.post('api/store_picto', {
+                    picto_url: picto_url,
+                    user_id: user_id
+                }).then(function(data){//成功->表示処理を書く
+                    // new_thumbnail_src = data.data;
+                    console.log(data);
+                    },
+                    function(){ //失敗
+                        alert("呼び出し失敗");
+                    }
+                );
             }
         }
     };
 }
 
 // ************************
-// //クロスサイト回避function
+// // クロスサイト回避の機能
 // ************************
+
 let new_thumbnail_src = 0;
 function get_thumbnail(thumbnail_origin){
     axios.post('api/picto', {
         url: thumbnail_origin
     }).then(function(data){//成功->表示処理を書く
-        new_thumbnail_src = data;
+        new_thumbnail_src = data.data;
         // console.log(new_thumbnail_src);
-        create_canvas(new_thumbnail_src);//キャンバス作成
+        create_canvas(new_thumbnail_src);
         },
         function(){ //失敗
-            alert("合成失敗");
+            alert("呼び出し失敗");
         }
     );
 };
-
 
 // ************************
 // テーブル挿入php用 axios通信
@@ -272,7 +282,7 @@ function post_param(hp,ap,dp){
 
 $('#test').on('click', function() {
     post_param(hp,ap,dp);
-    get_thumbnail(thumbnail_origin);
+    // get_thumbnail(thumbnail_origin);
   });
 
 

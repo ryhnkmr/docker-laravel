@@ -47960,38 +47960,41 @@ var app = new Vue({
 /***/ (function(module, exports) {
 
 // ************************
-// //バーコードリーダー機能//
+//   バーコードリーダーQuagga
 // ************************
-// Quagga.init({
-// inputStream: {
-//     name: 'Live',
-//     type: 'LiveStream',
-//     target: document.querySelector('#interactive'),//埋め込んだdivのID
-//     constraints: {
-//     facingMode: 'environment',
-//     },
-//     area: {//必要ならバーコードの読み取り範囲を調整
-//     top: "0%",
-//     right: "0%",
-//     left: "0%",
-//     bottom: "0%"
-//     },
-// },
-// locator: {
-//     patchSize: 'medium',
-//     halfSample: true,
-// },
-// numOfWorkers: 2,
-// decoder: {
-//     readers: ['ean_reader']//ISBNは基本的にこれ（他にも種類あり）
-// },
-// locate: true,
-// }, (err) => {
-// if(!err) {
-//     Quagga.start();
-// }
-// })
-//ISBN13桁コードのチェックデジット
+Quagga.init({
+  inputStream: {
+    name: 'Live',
+    type: 'LiveStream',
+    target: document.querySelector('#interactive'),
+    //埋め込んだdivのID
+    constraints: {
+      facingMode: 'environment'
+    },
+    area: {
+      //必要ならバーコードの読み取り範囲を調整
+      top: "0%",
+      right: "0%",
+      left: "0%",
+      bottom: "0%"
+    }
+  },
+  locator: {
+    patchSize: 'medium',
+    halfSample: true
+  },
+  numOfWorkers: 2,
+  decoder: {
+    readers: ['ean_reader'] //ISBNは基本的にこれ（他にも種類あり）
+
+  },
+  locate: true
+}, function (err) {
+  if (!err) {
+    Quagga.start();
+  }
+}); //ISBN13桁コードのチェックデジット
+
 var calc = function calc(isbn) {
   var arrIsbn = isbn.toString().split("").map(function (num) {
     return parseInt(num);
@@ -48019,7 +48022,7 @@ Quagga.onDetected(function (success) {
       turn_off_video(); //ビデオ領域非表示
     }
 }); // ************************
-// ////楽天ブックfunction
+// ///楽天Book function
 // ************************
 //楽天API用の変数用意
 
@@ -48031,6 +48034,7 @@ var r_BookDescription;
 var r_reviewCount;
 var r_reviewAverage;
 var r_BookThumbnail;
+var thumbnail_origin;
 var r_price;
 var r_size;
 var r_page;
@@ -48050,6 +48054,7 @@ function rakuten_info(isbn) {
     r_reviewCount = data.Items[0].Item.reviewCount;
     r_reviewAverage = data.Items[0].Item.reviewAverage;
     r_BookThumbnail = '<img src=\"' + data.Items[0].Item.largeImageUrl + '\" />';
+    thumbnail_origin = data.Items[0].Item.largeImageUrl;
     r_price = data.Items[0].Item.itemPrice;
     r_size = data.Items[0].Item.size;
     r_page = data.Items[0].Item.reviewAverage;
@@ -48082,15 +48087,16 @@ function rakuten_info(isbn) {
 
 
     calc_param();
+    get_thumbnail(thumbnail_origin);
   });
-} //ビデオ表示オフ (Quaggaで呼び出し)
+} //ビデオ表示オフ (ISBN読み取りと同時に起動)
 
 
 function turn_off_video() {
   // 「id="jQueryBox"」を非表示
   $("#interactive").css("display", "none");
 } // ************************
-// //パラメータ計算 (楽天Book apiで呼び出し)
+// パラメータ計算（楽天BOOKfunctionで読み込み）
 // ************************
 
 
@@ -48153,51 +48159,59 @@ function show_char_data(hp, ap, dp, r_BookThumbnail) {
 } // ************************
 // /////画像合成function
 // ************************
+// const thumbnail_origin = 'https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5705/9784774185705.jpg?_ex=200x200';
 
 
-var thumbnail_origin = 'https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5705/9784774185705.jpg?_ex=200x200';
 var arms_pass = "./img/char_img/arm_01_200_200.png";
 var eyes_pass = './img/char_img/eye_salary_200_200.png'; //canvas3
 
-var c = document.getElementById("canvas3");
-var ctx = c.getContext("2d"); //イメージ作成
+var canvas = document.getElementById("canvas3");
+var ctx = canvas.getContext("2d"); //イメージ作成
 
 var thumbnail = new Image();
 var arms = new Image();
 var eyes = new Image();
-var base_img; //合成function(クロスサイト回避functionで読みこむ)
+var base_img;
 
 function create_canvas(new_thumbnail_src) {
   //1.本の合成
-  thumbnail.src = new_thumbnail_src;
+  thumbnail.src = new_thumbnail_src; // thumbnail.src = thumbnail_origin ;//for test
+  // console.log(new_thumbnail_src);
 
   thumbnail.onload = function () {
     //本サムネイルのサイズを取得
-    var img_width = thumbnail.width; // 幅
-
-    var img_height = thumbnail.height; // 高さ
-
     var margin_left = (200 - thumbnail.width) / 2; //中央揃えのためのマージン取得
 
     ctx.drawImage(thumbnail, margin_left, 0, thumbnail.width, thumbnail.height); //2.腕の合成
 
-    arms.src = "./img/char_img/arm_01_200_200.png";
+    arms.src = "./img/char_img/arm_01_200_200.png"; //腕のパス
 
     arms.onload = function () {
       ctx.drawImage(arms, 0, 0, 200, 200); //3.目の合成
 
-      eyes.src = "./img/char_img/eye_salary_200_200.png";
+      eyes.src = "./img/char_img/eye_salary_200_200.png"; //目のパス
 
       eyes.onload = function () {
         ctx.drawImage(eyes, 0, 0, 200, 200); //base64へ変換
-        // let img = c.toDataURL("image/png"); //localhostではエラー
-        // console.log(img);
-        // document.write('<img src="' + img + '" width="200" height="200"/>');
+
+        var picto_url = canvas.toDataURL("image/png").replace(new RegExp("data:image/png;base64,"), ""); // console.log(picto_url);
+
+        axios.post('api/store_picto', {
+          picto_url: picto_url,
+          user_id: user_id
+        }).then(function (data) {
+          //成功->表示処理を書く
+          // new_thumbnail_src = data.data;
+          console.log(data);
+        }, function () {
+          //失敗
+          alert("呼び出し失敗");
+        });
       };
     };
   };
 } // ************************
-// //クロスサイト回避function
+// // クロスサイト回避の機能
 // ************************
 
 
@@ -48208,12 +48222,12 @@ function get_thumbnail(thumbnail_origin) {
     url: thumbnail_origin
   }).then(function (data) {
     //成功->表示処理を書く
-    new_thumbnail_src = data; // console.log(new_thumbnail_src);
+    new_thumbnail_src = data.data; // console.log(new_thumbnail_src);
 
-    create_canvas(new_thumbnail_src); //キャンバス作成
+    create_canvas(new_thumbnail_src);
   }, function () {
     //失敗
-    alert("合成失敗");
+    alert("呼び出し失敗");
   });
 }
 
@@ -48242,8 +48256,7 @@ function post_param(hp, ap, dp) {
 }
 
 $('#test').on('click', function () {
-  post_param(hp, ap, dp);
-  get_thumbnail(thumbnail_origin);
+  post_param(hp, ap, dp); // get_thumbnail(thumbnail_origin);
 }); //改良必要：
 //apiデータなかった場合、ビデオ再表示・Guagga再起動
 //読み込み部分のサイズ変更とマスキング
