@@ -48,4 +48,12 @@ class User extends Authenticatable
     public function characters(){
         return $this->hasMany('App\Models\Character');
     }
+
+    public function rooms() {
+        return $this->belongsToMany('App\Models\Room')->withTimestamps();;
+    }
+
+    public function teams() {
+        return $this->hasMany('App\Models\Team');
+    }
 }

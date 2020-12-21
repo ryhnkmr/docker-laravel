@@ -25,4 +25,8 @@ class Character extends Model
     { 
         return $this->belongsTo('App\Models\User');
     }
+
+    public function teams() {
+        return $this->belongsToMany('App\Models\Team');
+    }
 }

@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AttackEvent implements ShouldBroadcast
+class Player2Joined implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,15 +19,19 @@ class AttackEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public $battle;
-    public $room_id;
+    public $room;
+    public $player1;
+    public $player2;
 
-    public function __construct($battle, $id)
+    public function __construct($room, $player1, $player2)
     {
         //
-        $this->battle = $battle;
-        $this->room_id = $id;
+        $this->room = $room;
+        $this->player1 = $player1;
+        $this->player2 = $player2;
+
     }
+
 
     /**
      * Get the channels the event should broadcast on.
@@ -36,6 +40,6 @@ class AttackEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('rooms.'.$this->room_id, $this->battle);
+        return new Channel('rooms.'.$this->room->id, [$this->player1->teams->first()->characters, $this->player2->teams->first()->characters]);
     }
 }
