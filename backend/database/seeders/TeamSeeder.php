@@ -26,5 +26,13 @@ class TeamSeeder extends Seeder
             'name' => 'test2',
             'user_id' => 2,
         ]);
+
+        Team::find(1)->characters()->attach(1);
+        Team::find(1)->characters()->attach(2);
+        Team::find(1)->characters()->attach(3);
+
+        Team::find(2)->characters()->attach(11);
+        Team::find(2)->characters()->attach(12);
+        Team::find(2)->characters()->attach(13);
     }
 }

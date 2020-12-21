@@ -50,7 +50,7 @@ class User extends Authenticatable
     }
 
     public function rooms() {
-        return $this->belongsToMany('App\Models\Room');
+        return $this->belongsToMany('App\Models\Room')->withTimestamps();;
     }
 
     public function teams() {

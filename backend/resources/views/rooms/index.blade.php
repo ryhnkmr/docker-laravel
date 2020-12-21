@@ -44,11 +44,11 @@
         <script>
           join_btn = document.getElementById('join-btn');
           join_btn.onclick = function() {
-            axios.post('api/rooms/join', {
+            axios.post('/api/rooms/join', {
               user_id: <?php echo(Auth::user()->id )?>,
               room_id: join_btn.value,
             }).then(function (response) {
-              window.location = 'rooms/' + response.data.id;
+              window.location =  'rooms/' + response.data.id;
             }).catch(function (error) {
               console.log(error);
             });

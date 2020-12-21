@@ -102,97 +102,19 @@
         }, 
       ];
       
-      var pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
+      let pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
         cluster: 'ap3'
       });
 
-      var channel = pusher.subscribe('rooms.'+ room_id);
-      channel.bind('App\\Events\\Battle', function(data) {
-        // battle_infoをsetする
-        player1 = [
-        {
-          hp: 2000,
-          chara: {
-            id: 1,
-            hp: 2000,
-            ap: 1000,
-            dp: 500,
-            user_id: 1,
-          }, 
-        },
-        {
-          hp: 2000,
-          chara: {
-            id: 1,
-            hp: 2000,
-            ap: 1000,
-            dp: 500,
-            status: 0,
-            user_id: 1,
-          }, 
-        },
-        {
-          hp: 2000,
-          chara: {
-            id: 1,
-            hp: 2000,
-            ap: 1000,
-            dp: 500,
-            status: 0,
-            user_id: 1,
-          }, 
-        },
-      ];
-      player2 = [
-        {
-          hp: 2000,
-          chara: {
-            id: 1,
-            hp: 2000,
-            ap: 1000,
-            dp: 500,
-            status: 0,
-            user_id: 1,
-          }, 
-        },
-        {
-          hp: 2000,
-          chara: {
-            id: 1,
-            hp: 2000,
-            ap: 1000,
-            dp: 500,
-            status: 0,
-            user_id: 1,
-          }, 
-        },
-        {
-          hp: 2000,
-          chara: {
-            id: 1,
-            hp: 2000,
-            ap: 1000,
-            dp: 500,
-            status: 0,
-            user_id: 1,
-          }, 
-        }, 
-      ];
-        battle_info.player1 = player1;
-        battle_info.player2 = player2;
-      });
-
-      battle_info.player1 = player1;
-      battle_info.player2 = player2; 
-
+      let channel = pusher.subscribe('rooms.'+ room_id);
       attack_btn = document.getElementById('attack');
       // host: player1, guest: player2
 
       player1_hp = document.getElementById('player1_current_hp');
       player2_hp = document.getElementById('player2_current_hp');
 
-      player1_hp.innerHTML = player1[0].hp;
-      player2_hp.innerHTML = player2[0].hp;
+      // player1_hp.innerHTML = player1[0].hp;
+      // player2_hp.innerHTML = player2[0].hp;
       // MEMO: 戦闘の流れ
       // 1. ラウンド準備フェイズ
       //    キャラ選択、その情報をbroadcastする
@@ -241,9 +163,47 @@
         });
       }
 
-      // ホストがルームを作成するとこのイベントが起きbattle_infoのplayer1にセット。
-      channel.bind('App\\Events\\RoomCreated', function(data) {
-        console.log(test)
+      // MEMO:player2の参加をトリガーにしてuserの情報をセットする（battle_info）
+      channel.bind('App\\Events\\Player2Joined', function(data) {
+        battle_info = {
+          info: {
+            tern: 1,
+            first_flg: true,
+          }, 
+          player1: [
+            {
+              hp: data.player1.teams[0].characters[0].hp,
+              chara: data.player1.teams[0].characters[0]
+            },
+            {
+              hp: data.player1.teams[0].characters[1].hp,
+              chara: data.player1.teams[0].characters[1]
+            },
+            {
+              hp: data.player1.teams[0].characters[2].hp,
+              chara: data.player1.teams[0].characters[2]
+            },
+          ],
+          player2: [
+            {
+              hp: data.player2.teams[0].characters[0].hp,
+              chara: data.player2.teams[0].characters[0]
+            },
+            {
+              hp: data.player2.teams[0].characters[1].hp,
+              chara: data.player2.teams[0].characters[1]
+            },
+            {
+              hp: data.player2.teams[0].characters[2].hp,
+              chara: data.player2.teams[0].characters[2]
+            },
+          ], 
+        }
+      })
+      
+      channel.bind('App\\Events\\ShareBattleInfo', function(data) {
+        battle_info = data.battle_info;
+
       })
 
       channel.bind('App\\Events\\AttackEvent', function(data) {

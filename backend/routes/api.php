@@ -57,6 +57,9 @@ Route::post('/api/user/{{Auth::user()->id}}/characters', function (Request $requ
 
 use App\Events\AttackEvent;
 use App\Events\RoomCreated;
+use App\Events\Player2Joined;
+
+
 Route::post('/rooms/{id}/attack',function($id, Request $request){
 
     Log::debug($id);
@@ -82,6 +85,17 @@ Route::post('rooms', function(Request $request) {
 
 Route::post('rooms/join', function(Request $request) {
     $room = Room::where([['can_join_flg', true], ['id', $request->room_id]])->first();
+    $player1 = $room->users->first();
+    $player2 = User::find($request->user_id);
     
+    event(new Player2Joined($room, $player1, $player2));
+
     return $room;
+});
+
+Route::post('share_battle_info', function(Request $request) {
+    
+    event(new ShareBattleInfo($request->battle_info, $request->room_id));
+
+    return $request;
 });

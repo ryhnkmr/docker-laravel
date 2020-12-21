@@ -49,7 +49,6 @@ class RoomController extends Controller
      */
     public function show(Room $room)
     {
-        Log::debug($room);
         return view('rooms.show')->with('room', $room);
     }
 
