@@ -16,7 +16,7 @@ use App\Http\Controllers\RoomController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('toppage');
 });
 
 use App\Events\Battle;
