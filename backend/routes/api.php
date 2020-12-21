@@ -22,10 +22,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// post charのルーティング書く。
+// 挿入処理を書いてみて、通ったらcontrollerに移行する。 Api controller '書き方例：CharactersController@store'
 Route::post('/test', function (Request $request) {
-    // $user = Auth::user();
-    
-    // $user = User::find($id);
     // キャラ生成
     $characters = Character::create([
         'user_id'=> $request->user_id,
@@ -38,51 +37,14 @@ Route::post('/test', function (Request $request) {
     ]);
     return "ok";
 });
-// Route::post('/test', function (Request $request) {
-//     // キャラ生成
-//     $characters = new Character;
-//     $characters->user_id = Auth::user();
-//     $characters->name = $request->name;
-//     $characters->hp = $request->hp;
-//     $characters->ap = $request->ap;
-//     $characters->dp = $request->dp;
-//     $characters->thumnailURL = $request->thumnailURL;
-//     $characters->pictoURL = $request->pictoURL;
-//     $characters->save();
-//     return "ok";
-// });
 
-// post charのルーティング書く。
-// 挿入処理を書いてみて、通ったらcontrollerに移行する。 Api controller '書き方例：CharactersController@store'
-Route::post('/user/{{Auth::user()->id}}/characters', function (Request $request) {
-    //キャラテーブル挿入
-    // $validator = Validator::make($request->all(), [
-    //     'user_id' => 'required',
-    //     'name' => 'required',
-    //     'hp' => 'required',
-    //     'ap' => 'required',
-    //     'dp' => 'required',
-    //     'thumnailURL' => 'required',
-    //     'pictoURL' => 'required'
-    // ]);
-    // //バリデーション:エラー 
-    // if ($validator->fails()) {
-    //     return redirect('/create_characters')
-    //         ->withInput()
-    //         ->withErrors($validator);
-    // }
-    // キャラ生成
-    $characters = new Character;
-    $characters->user_id = $request->user_id;
-    $characters->name = $request->name;
-    $characters->hp = $request->hp;
-    $characters->ap = $request->ap;
-    $characters->dp = $request->dp;
-    $characters->thumnailURL = $request->thumnailURL;
-    $characters->pictoURL = $request->pictoURL;
-    $characters->save();
-    return redirect('/create_characters');
+// 画像合成用（クロスサイト対策）
+Route::post('/picto', function (Request $request) {
+    $result = "data:image/jpeg;base64," .base64_encode(file_get_contents($request->url)); 
+    return $result;
 });
+
+
 
 use App\Events\AttackEvent;
 

@@ -169,10 +169,75 @@ function show_char_data(hp, ap, dp, r_BookThumbnail){
     $("#r_BookThumbnail").html(r_BookThumbnail);
 }
 
-//テーブル挿入php用 axios通信
+// ************************
+// /////画像合成function
+// ************************
+const thumbnail_origin = 'https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5705/9784774185705.jpg?_ex=200x200';
+const arms_pass = "./img/char_img/arm_01_200_200.png";
+const eyes_pass = './img/char_img/eye_salary_200_200.png';
+
+//canvas3
+let c=document.getElementById("canvas3");
+let ctx=c.getContext("2d");
+
+//イメージ作成
+let thumbnail = new Image();
+let arms = new Image();
+let eyes = new Image();
+
+let base_img;
+
+// axios通信を開始
+function get_thumbnail(thumbnail_origin){
+    axios.post('api/picto', {
+        url: thumbnail_origin
+    }).then(function(data){//成功->表示処理を書く
+            console.log(data);
+
+            // //1.本の合成
+            // // console.log(data);
+            // thumbnail.src = data;
+            // // thumbnail.src = thumbnail_origin ;//for test
+            // // console.log(thumbnail.src);
+
+            // thumbnail.onload = function() {
+            //     //本サムネイルのサイズを取得
+            //     let img_width = thumbnail.width;  // 幅
+            //     let img_height = thumbnail.height; // 高さ
+            //     let margin_left = (200 - thumbnail.width)/2; //中央揃えのためのマージン取得
+            //     ctx.drawImage(thumbnail, margin_left, 0, thumbnail.width, thumbnail.height);
+
+            //     //2.腕の合成
+            //     arms.src = "./img/02.png";
+            //     arms.onload = function() {
+            //         ctx.drawImage(arms, 0, 0, 200, 200);
+                    
+            //         //3.目の合成
+            //         eyes.src = "./img/01.png";
+            //         eyes.onload = function(){
+            //             ctx.drawImage(eyes, 0, 0, 200, 200);
+            //             //base64へ変換
+            //             let img = c.toDataURL("image/png"); //localhostではエラー
+            //             // console.log(img);
+            //             // document.write('<img src="' + img + '" width="200" height="200"/>');
+            //         }
+            //     }
+            // };
+        },
+        function(){ //失敗
+            alert("呼び出し失敗");
+        }
+    );
+
+}
+
+// ************************
+// テーブル挿入php用 axios通信
+// ************************
+
 function post_param(hp,ap,dp){
     //アニメーション挿入部
-        
+
     //apiに送信
     axios.post('api/test', {
         user_id: user_id,
@@ -182,8 +247,7 @@ function post_param(hp,ap,dp){
         dp: 3,
         thumnailURL: 'https://',
         pictoURL: 'img/img.png'
-    }).then(
-            function(data){//成功->表示処理を書く
+    }).then(function(data){//成功->表示処理を書く
                 console.log(data);
             },
             function(){ //失敗
@@ -194,6 +258,7 @@ function post_param(hp,ap,dp){
 
 $('#test').on('click', function() {
     post_param(hp,ap,dp);
+    get_thumbnail(thumbnail_origin)
   });
 
 
