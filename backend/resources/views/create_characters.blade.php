@@ -7,14 +7,81 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     
     <title>Create My Character with a Book</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<style>
+    .agba_box{
+        background-color: rgba(255,255,255,0.8);
+    }
+</style>
+
 </head>
 
 <body>
-    <!-- camera ウインドウ -->
-    <div id="interactive" class="viewport"></div>
-    <button id="test">テスト用</button>
-    <div class="auth">{{Auth::user()->id}}
+
+<body>
+    <div class="container-fluid" style="background-image: url({{ asset('img/265990_m.jpg') }});">
+        <div class="row" style="height:1000px;">
+            <div class="left_column  col-md-3 pt-4">
+                <div class="agba_box p-4" style="height:150px;">
+                <h2>SCORE</h2>
+                <div id="" style="font-size:40px; font-weight: bold;">00000</div>
+                </div>
+                    <div style="height:680px;"></div>
+                    <div class="agba_box p-2" style="height:80px;">
+                <div id=""  style="font-size:40px; font-weight: bold;">user_name</div>
+                </div>
+            </div>
+
+            <div class="main_column  col-md-6 pt-4 ">
+                <div class="bg-white col text-center" style="height:380px;">
+                        <!-- キャンバス（画像合成部） -->
+                    <div class="can3 pt-4">
+                        <canvas id="canvas3" width=200 height=200></canvas>
+                    </div>
+                    <!-- <img src="{{asset('img/picto_img/20201221-144546-1.png')}}" class="pt-4" style="width:35%;"> -->
+                </div>
+                <div class="bg-white col text-center" style="height:60px;">
+                <div id="name" style="font-size:40px; font-weight: bold;">キャラクター名</div> 
+                </div>
+                <div class="bg-white" style="height:500px;">
+                    <!-- camera ウインドウ -->
+                    <div id="interactive" class="viewport col text-center"></div>
+                    <button id="test">テスト用</button>
+                    <div class="auth">{{Auth::user()->id}}
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="right_column col-md-2 pt-4">
+                <div class="agba_box mb-4 p-3" style="height:120px;">
+                <h2>HP</h2>
+                <div id="hp" style="font-size:40px; font-weight: bold;">000000</div>
+                </div>
+                
+                <div class="agba_box mt-4 p-3" style="height:120px;">
+                <h2>AP</h2>
+                <div id="ap" style="font-size:40px; font-weight: bold;">000000</div>
+                </div>
+                <div class="agba_box mt-4 p-3" style="height:120px;">
+                <h2>DP</h2>
+                <div id="dp" style="font-size:40px; font-weight: bold;">000000</div>
+                </div>
+                <div                  style="height:420px;"></div>
+                <div class="agba_box p-2" style="height:80px;">
+                <div id="" style="font-size:40px; font-weight: bold;">DATE</div> 
+                
+                </div>
+            </div>
+        </div>
     </div>
+</body>
+
+
+
+
+
 
     <!-- 結果表示 -->
     <div class="R_book_info">
@@ -43,10 +110,7 @@
         <div id="r_BookThumbnail"></div>
     </div>
     
-    <!-- キャンバス（画像合成部） -->
-    <div class="can3">
-        <canvas id="canvas3" width=200 height=200></canvas>
-    </div>
+
     
 
     <!-- guaggaとjquery、JSの読み込み -->
