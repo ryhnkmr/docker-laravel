@@ -19,10 +19,6 @@ Route::get('/', function () {
     return view('index');
 });
 
-// 後で消す
-Route::get('/styling', function () {
-    return view('styling');
-});
 
 use App\Events\Battle;
 
