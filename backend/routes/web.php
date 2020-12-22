@@ -40,6 +40,7 @@ Route::get('/', function () {
     return view('index');
 });
 
+
 use App\Events\Battle;
 
 Route::get('/room', function () {
