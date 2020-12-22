@@ -26,8 +26,8 @@ class CharacterSeeder extends Seeder
                 'dp'=> 400,
                 'exp'=>0,
                 'lv'=>1,
-                'thumnailURL'=>'hoge',
-                'pictoURL'=>'hoge',
+                'thumnailURL'=>'https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5357/9784093865357.jpg?_ex=200x200',
+                'pictoURL'=>'img/picto_img/20201222-001942-1.png',
             ]);
         }
 
@@ -40,8 +40,8 @@ class CharacterSeeder extends Seeder
                 'dp'=> 400,
                 'exp'=>0,
                 'lv'=>1,
-                'thumnailURL'=>'hoge',
-                'pictoURL'=>'hoge',
+                'thumnailURL'=>'https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/1726/9784575521726.jpg?_ex=200x200',
+                'pictoURL'=>'img/picto_img/20201222-011431-1.png',
             ]);
         }
     }

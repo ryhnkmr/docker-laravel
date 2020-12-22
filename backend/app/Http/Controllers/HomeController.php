@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Team;
 
 class HomeController extends Controller
 {
@@ -23,6 +25,10 @@ class HomeController extends Controller
      */
     public function home()
     {
-        return view('home');
+        $characters =  Auth::user()->characters ;
+        return view('home', ['characters' => $characters]);
+
+        $team = Team::find(1)->characters()->attach(1);
+        
     }
 }
